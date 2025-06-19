@@ -1,0 +1,346 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Better Auth Plugin Development Guidelines
+
+## Plugin Structure
+
+Better Auth plugins follow a specific structure with TypeScript types. Here are the key guidelines:
+
+### Server Plugin Definition
+
+```typescript
+import type { BetterAuthPlugin } from "better-auth";
+import { createAuthEndpoint } from "better-auth/api";
+import type { TenantContext } from "../tenant"; // Import tenant context type
+
+export const myPlugin = (options?: PluginOptions) => {
+  return {
+    id: "my-plugin", // unique identifier
+    
+    // Database schema extensions
+    schema: {
+      tableName: {
+        fields: {
+          id: { type: "string", required: true },
+          organizationId: { type: "string", required: true }, // REQUIRED for multi-tenant
+          fieldName: {
+            type: "string" | "number" | "boolean" | "date", // only these types
+            required?: boolean,
+            unique?: boolean,
+            references?: {
+              table: string;
+              field: string;
+            }
+          }
+        },
+        modelName?: string, // optional custom model name
+        disableMigration?: boolean // conditionally disable migration
+      }
+    },
+    
+    // API endpoints
+    endpoints: {
+      endpointName: createAuthEndpoint("/path", {
+        method: "GET" | "POST" | "PUT" | "DELETE",
+        body?: zodSchema, // if method has body
+        query?: zodSchema, // for query parameters
+      }, async (ctx) => {
+        // Multi-tenant validation (REQUIRED for organization-scoped endpoints)
+        if (!ctx.organization) {
+          return ctx.json(
+            { success: false, error: "Organization context required" },
+            { status: 400 }
+          );
+        }
+        
+        // Access organization-scoped storage
+        const tenantCtx = ctx as TenantContext;
+        const storage = tenantCtx.getOrganizationStorage?.() || defaultStorage;
+        
+        // Use Better Auth adapter for database operations
+        // const result = await ctx.context.adapter.findMany({...});
+        
+        // Access organization-specific configuration
+        const config = tenantCtx.getOrganizationConfig?.("my-plugin") || defaultConfig;
+        
+        // Access session: ctx.session
+        // Return response: ctx.json({})
+        return ctx.json({ message: "success" });
+      })
+    },
+    
+    // Middleware
+    middlewares?: [
+      {
+        path: "/my-plugin/protected",
+        middleware: createAuthMiddleware(async (ctx) => {
+          // Custom middleware logic
+          return { context: ctx };
+        })
+      }
+    ],
+    
+    // Hooks
+    hooks?: {
+      before?: [{
+        matcher: (context) => boolean,
+        handler: createAuthMiddleware(async (ctx) => {
+          // Before action hook
+          return { context: ctx };
+        })
+      }],
+      after?: [{
+        matcher: (context) => boolean,
+        handler: async (ctx) => {
+          // After action hook
+          return ctx.json({ modified: true });
+        }
+      }]
+    },
+    
+    // Rate limiting
+    rateLimit?: [
+      {
+        pathMatcher: (path: string) => boolean,
+        limit: number,
+        window: number // seconds
+      }
+    ],
+    
+    // Lifecycle hooks
+    onRequest?: async (request, context) => void,
+    onResponse?: async (response, context) => void,
+    
+  } satisfies BetterAuthPlugin;
+};
+```
+
+### Client Plugin Definition
+
+```typescript
+import type { BetterAuthClientPlugin } from "better-auth/client";
+import type { myPlugin } from "./index"; // Import server plugin type
+
+export const myPluginClient = (options?: ClientOptions) => {
+  return {
+    id: "my-plugin", // must match server plugin id
+    
+    // Infer server plugin types
+    $InferServerPlugin: {} as ReturnType<typeof myPlugin>,
+    
+    // Custom client actions
+    getActions?: ($fetch) => {
+      return {
+        customAction: async (data: any, fetchOptions?: any) => {
+          return $fetch("/custom/endpoint", {
+            method: "POST",
+            body: data,
+            headers: {
+              // Include organization headers when needed
+              "X-Organization-ID": getCurrentOrganizationId(),
+              "Authorization": `Bearer ${getOrganizationApiKey()}`,
+              ...fetchOptions?.headers,
+            },
+            ...fetchOptions
+          });
+        }
+      };
+    },
+    
+    // Reactive state with Nanostores
+    getAtoms?: ($fetch) => {
+      const myAtom = atom(null);
+      return { myAtom };
+    },
+    
+    // Override HTTP methods for inferred paths
+    pathMethods?: {
+      "/my-plugin/endpoint": "POST"
+    }
+    
+  } satisfies BetterAuthClientPlugin;
+};
+```
+
+## Multi-Tenant Context Interface
+
+When developing plugins for the Funish Vertex platform, you have access to the `TenantContext` interface:
+
+```typescript
+interface TenantContext {
+  organization: {
+    id: string;
+    name: string;
+    slug: string;
+    dbSchema: string;
+    storageQuota?: number;
+    apiKeys: OrganizationApiKey[];
+  };
+  
+  // Organization-scoped resource access
+  getOrganizationStorage: () => Storage;
+  getOrganizationConfig: (pluginId: string) => PluginConfig | null;
+  validateApiKey: (key: string) => Promise<boolean>;
+  
+  // Note: Use ctx.context.adapter for database operations instead of getOrganizationDatabase
+}
+```
+
+### Usage Patterns
+
+```typescript
+// 1. Organization-scoped storage access
+const tenantCtx = ctx as TenantContext;
+const storage = tenantCtx.getOrganizationStorage?.() || defaultStorage;
+await storage.setItem("user-data", data); // Automatically prefixed with org ID
+
+// 2. Organization-scoped database access using Better Auth adapter
+const users = await ctx.context.adapter.findMany({
+  model: "users",
+  where: [
+    {
+      field: "organizationId",
+      operator: "eq",
+      value: ctx.organization.id, // Always scope queries
+    },
+  ],
+}) as UserData[];
+
+// 3. Organization-specific configuration
+const config = tenantCtx.getOrganizationConfig?.("my-plugin") || {
+  maxItems: 1000,
+  allowedTypes: ["image/*"],
+};
+
+// 4. API key validation
+const isValidKey = await ctx.validateApiKey?.(providedKey);
+if (!isValidKey) {
+  return ctx.json({ error: "Invalid API key" }, { status: 401 });
+}
+```
+
+### Important Rules
+
+1. **Schema Field Types**: Only use `"string"`, `"number"`, `"boolean"`, `"date"` - NO `"json"` type
+2. **Organization ID Field**: ALWAYS include `organizationId: { type: "string", required: true }` in database schemas
+3. **Plugin ID**: Must be unique and match between server and client
+4. **Imports**: Use proper imports from `better-auth` and `better-auth/client`
+5. **Type Safety**: Always use `satisfies BetterAuthPlugin` and `satisfies BetterAuthClientPlugin`
+6. **Endpoints**: Use `createAuthEndpoint` for all custom endpoints
+7. **Middleware**: Use `createAuthMiddleware` for all middleware functions
+8. **Database Access**: Use `ctx.context.adapter` for all database operations with proper organization scoping
+9. **Storage Access**: Use `(ctx as TenantContext).getOrganizationStorage?.() || defaultStorage` for organization-scoped storage
+10. **Organization Validation**: Always validate `ctx.organization` for organization-scoped endpoints
+11. **Query Scoping**: Always scope database queries to the current organization
+12. **Header-based Organization ID**: Use `X-Organization-ID` header, never path-based organization identification
+
+### Organization Context Validation Pattern
+
+```typescript
+// Required pattern for organization-scoped endpoints
+const endpoint = createAuthEndpoint("/my-plugin/data", { method: "GET" }, async (ctx) => {
+  // 1. Validate organization context
+  if (!ctx.organization) {
+    return ctx.json(
+      { success: false, error: "Organization context required" },
+      { status: 400 }
+    );
+  }
+  
+  // 2. Use organization-scoped resources
+  const tenantCtx = ctx as TenantContext;
+  const storage = tenantCtx.getOrganizationStorage?.() || defaultStorage;
+  const config = tenantCtx.getOrganizationConfig?.("my-plugin") || defaultConfig;
+  
+  // 3. Scope all queries to organization using Better Auth adapter
+  const data = await ctx.context.adapter.findMany({
+    model: "myTable",
+    where: [
+      {
+        field: "organizationId",
+        operator: "eq",
+        value: ctx.organization.id,
+      },
+    ],
+  }) as MyTableData[];
+    
+  return ctx.json({ data });
+});
+```
+
+### Configuration Integration
+
+Server configuration:
+```typescript
+import { betterAuth } from "better-auth";
+import { myPlugin } from "./plugins/my-plugin";
+
+export const auth = betterAuth({
+  plugins: [
+    myPlugin(options)
+  ]
+});
+```
+
+Client configuration:
+```typescript
+import { createAuthClient } from "better-auth/client";
+import { myPluginClient } from "./plugins/my-plugin/client";
+
+export const authClient = createAuthClient({
+  plugins: [
+    myPluginClient(options)
+  ]
+});
+```
+
+### Database Migration
+
+After creating plugins with schema, run:
+```bash
+npx @better-auth/cli generate
+# or
+npx @better-auth/cli migrate
+```
+
+### API Request Headers for Multi-Tenant
+
+When making requests to organization-scoped endpoints:
+
+```http
+POST /api/v1/my-plugin/data
+Headers:
+  X-Organization-ID: acme-corp
+  Authorization: Bearer org_acme-corp_api_12345678
+  Content-Type: application/json
+```
+
+### Testing Multi-Tenant Plugins
+
+```typescript
+import { describe, it, expect } from "vitest";
+
+describe("My Plugin Multi-Tenant", () => {
+  it("should isolate data between organizations", async () => {
+    const org1Context = createMockContext({ 
+      organization: { id: "org1", name: "Org 1" } 
+    });
+    const org2Context = createMockContext({ 
+      organization: { id: "org2", name: "Org 2" } 
+    });
+    
+    // Test data isolation
+    await myPlugin.endpoints.createData(org1Context, { name: "Org 1 Data" });
+    await myPlugin.endpoints.createData(org2Context, { name: "Org 2 Data" });
+    
+    const org1Data = await myPlugin.endpoints.getData(org1Context);
+    const org2Data = await myPlugin.endpoints.getData(org2Context);
+    
+    expect(org1Data).not.toEqual(org2Data);
+  });
+});
+```
+

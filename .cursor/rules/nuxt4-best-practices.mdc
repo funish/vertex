@@ -1,0 +1,274 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Nuxt 4 Best Practices Guide
+
+## Project Structure (Nuxt 4 Default Structure)
+
+Nuxt 4 introduces a new default project structure, moving all application code to the `app/` directory:
+
+```
+.output/
+.nuxt/
+app/
+  assets/
+  components/
+  composables/
+  layouts/
+  middleware/
+  pages/
+  plugins/
+  utils/
+  app.config.ts
+  app.vue
+  router.options.ts
+content/
+layers/
+modules/
+node_modules/
+public/
+server/
+  api/
+  middleware/
+  plugins/
+  routes/
+  utils/
+nuxt.config.ts
+```
+
+## Directory Structure Best Practices
+
+### 1. Component Organization
+- Use nested directories to organize related components: `components/base/foo/Button.vue` → `<BaseFooButton />`
+- Use `.client.vue` suffix for client-side only components: `Comments.client.vue`
+- Use `.server.vue` suffix for server-side only components: `Comments.server.vue`
+- Custom component directory configuration:
+
+```typescript
+export default defineNuxtConfig({
+  components: [
+    // Custom component paths
+    { path: '~/calendar-module/components' },
+    // Disable path prefix
+    { path: '~/user-module/components', pathPrefix: false },
+    // Add custom prefix
+    { path: '~/components/special-components', prefix: 'Special' },
+    '~/components'
+  ]
+})
+```
+
+### 2. Composables Organization
+- Top-level files are auto-imported: `composables/useFoo.ts`
+- Nested directories need configuration:
+
+```typescript
+export default defineNuxtConfig({
+  imports: {
+    dirs: [
+      '~/composables',
+      '~/composables/*/index.{ts,js,mjs,mts}',
+      '~/composables/**'
+    ]
+  }
+})
+```
+
+### 3. Middleware
+- Global middleware: `middleware/analytics.global.ts`
+- Named middleware: `middleware/auth.ts`
+- Execution order control: Use numeric prefixes
+
+```
+middleware/
+  01.setup.global.ts
+  02.analytics.global.ts
+  auth.ts
+```
+
+### 4. Server Directory
+```
+server/
+  api/
+    hello.ts      # /api/v1/hello
+  routes/
+    bonjour.ts    # /bonjour
+  middleware/
+    log.ts        # log all requests
+```
+
+## Migrating to Nuxt 4
+
+### 1. Maintain Nuxt 3 Structure Configuration
+To keep the old directory structure:
+
+```typescript
+export default defineNuxtConfig({
+  srcDir: '.',
+  dir: {
+    app: 'app'
+  }
+})
+```
+
+### 2. Run Migration Tool
+```bash
+npx codemod@latest nuxt/4/migration-recipe
+```
+
+### 3. Configuration Migration
+- `generate` → `nitro.prerender`
+- `build.publicPath` → `app.cdnURL`
+- `router.base` → `app.baseURL`
+
+```typescript
+export default defineNuxtConfig({
+  nitro: {
+    prerender: {
+      ignore: ['/admin', '/private'],
+      routes: ['/sitemap.xml', '/robots.txt']
+    }
+  },
+  app: {
+    cdnURL: 'https://my-cdn.net',
+    baseURL: '/my-app/'
+  }
+})
+```
+
+## API Best Practices
+
+### 1. Data Fetching
+Use `useLazyFetch` instead of `useFetch` for better performance:
+
+```typescript
+// Recommended
+const { data: posts } = useLazyFetch('/api/v1/posts')
+
+// useFetch defaults to shallow reactivity in Nuxt 4
+const { data } = useFetch('/api/v1/test', { deep: true })
+```
+
+### 2. Component Auto-import
+Component naming convention is now standardized:
+- `components/SomeFolder/MyComponent.vue` → `<SomeFolderMyComponent />`
+
+### 3. Experimental Features Configuration
+```typescript
+export default defineNuxtConfig({
+  experimental: {
+    viewTransition: true,
+    asyncContext: true,
+    appManifest: true
+  }
+})
+```
+
+## Performance Optimization
+
+### 1. Build Optimization
+```typescript
+export default defineNuxtConfig({
+  vite: {
+    build: {
+      assetsDir: '_nuxt/'
+    }
+  },
+  nitro: {
+    experimental: {
+      wasm: true
+    }
+  }
+})
+```
+
+### 2. Type Safety
+```typescript
+export default defineNuxtConfig({
+  typescript: {
+    strict: true,
+    typeCheck: true
+  }
+})
+```
+
+## Development Tools Configuration
+
+### 1. DevTools
+```typescript
+export default defineNuxtConfig({
+  devtools: { enabled: true }
+})
+```
+
+### 2. Debug Mode
+```typescript
+export default defineNuxtConfig({
+  debug: process.env.NODE_ENV === 'development'
+})
+```
+
+## File Naming Conventions
+
+- Pages: `pages/index.vue`, `pages/[id].vue`
+- Layouts: `layouts/default.vue`, `layouts/custom.vue`
+- Components: `components/AppHeader.vue`
+- Middleware: `middleware/auth.ts`
+- Plugins: `plugins/foo.ts`
+- Composables: `composables/useAuth.ts`
+- Utils: `utils/helpers.ts`
+
+## Shared Directory
+
+Nuxt 4 introduces the `shared/` directory for client and server shared code:
+
+```
+shared/
+  utils/
+    lower.ts           # Auto-imported
+  types/
+    bar.d.ts           # Auto-imported
+  capitalize.ts        # Not auto-imported
+  formatters/
+    upper.ts           # Not auto-imported
+```
+
+## Layers Usage
+
+For complex projects, use Nuxt Layers:
+
+```
+some-app/
+  nuxt.config.ts
+  pages/
+    app-page.vue
+nuxt.config.ts
+```
+
+```typescript
+export default defineNuxtConfig({
+  extends: ['./some-app']
+})
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

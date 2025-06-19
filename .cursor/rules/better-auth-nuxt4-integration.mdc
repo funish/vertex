@@ -1,0 +1,710 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Better Auth + Nuxt 4 Integration Best Practices
+
+## Overview
+
+Better Auth is a comprehensive TypeScript authentication framework that integrates seamlessly with Nuxt 4. This guide provides best practices for integrating Better Auth with Nuxt 4's new directory structure and features.
+
+## Project Setup
+
+### 1. Installation
+
+```bash
+# Install Better Auth core packages
+pnpm add better-auth
+
+# Install database driver (choose one)
+pnpm add pg  # For PostgreSQL
+pnpm add better-sqlite3  # For SQLite
+pnpm add mongodb  # For MongoDB
+
+# Install CLI for migrations
+pnpm add -D @better-auth/cli
+```
+
+### 2. Nuxt 4 Directory Structure
+
+Adapt Better Auth to Nuxt 4's new `app/` directory structure:
+
+```
+app/
+  utils/
+    auth.ts           # Better Auth server config
+    auth-client.ts    # Better Auth client config
+  middleware/
+    auth.global.ts    # Authentication middleware
+  composables/
+    useAuth.ts        # Authentication composables
+  components/
+    auth/
+      LoginForm.vue
+      SignupForm.vue
+server/
+  api/
+    auth/
+      [...all].ts     # Better Auth API handler
+  middleware/
+    cors.ts           # CORS configuration
+```
+
+## Server Configuration
+
+### 1. Better Auth Server Setup
+
+Create `app/utils/auth.ts`:
+
+```typescript
+import { betterAuth } from "better-auth";
+import { admin, organization, twoFactor } from "better-auth/plugins";
+import { Pool } from "pg";
+
+export const auth = betterAuth({
+  // Database configuration using native PostgreSQL Pool
+  database: new Pool({
+    connectionString: process.env.DATABASE_URL,
+  }),
+
+  // Email & Password authentication
+  emailAndPassword: {
+    enabled: true,
+    requireEmailVerification: true,
+    sendResetPassword: async ({ user, url, token }) => {
+      // Send password reset email
+      await $fetch("/api/v1/email/send-reset", {
+        method: "POST",
+        body: { email: user.email, url, token },
+      });
+    },
+  },
+
+  // Social providers
+  socialProviders: {
+    github: {
+      clientId: process.env.GITHUB_CLIENT_ID!,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+    },
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    },
+  },
+
+  // Plugins
+  plugins: [admin(), organization(), twoFactor()],
+
+  // Advanced configuration
+  advanced: {
+    useSecureCookies: process.env.NODE_ENV === "production",
+    cookiePrefix: "better-auth",
+    crossSubDomainCookies: {
+      enabled: false,
+    },
+  },
+
+  // Rate limiting
+  rateLimit: {
+    enabled: true,
+    window: 60, // 1 minute
+    max: 100, // 100 requests per minute
+    storage: "database",
+  },
+});
+```
+
+### 2. API Route Handler
+
+Create `server/api/v1/[...all].ts`:
+
+```typescript
+export default defineEventHandler(async (event) => {
+  return auth.handler(toWebRequest(event));
+});
+```
+
+### 3. CORS Configuration
+
+Create `server/middleware/cors.ts`:
+
+```typescript
+import cors from "cors";
+
+export default defineEventHandler((event) => {
+  // Skip CORS for non-auth routes
+  if (!event.node.req.url?.startsWith("/api/v1/auth")) {
+    return;
+  }
+
+  return new Promise((resolve) => {
+    cors({
+      origin:
+        process.env.NODE_ENV === "development"
+          ? "http://localhost:3000"
+          : process.env.NUXT_PUBLIC_SITE_URL,
+      credentials: true,
+      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    })(event.node.req, event.node.res, resolve);
+  });
+});
+```
+
+## Client Configuration
+
+### 1. Better Auth Client Setup
+
+Create `app/utils/auth-client.ts`:
+
+```typescript
+import { createAuthClient } from "better-auth/vue";
+import {
+  adminClient,
+  organizationClient,
+  twoFactorClient,
+} from "better-auth/client/plugins";
+
+export const authClient = createAuthClient({
+  baseURL:
+    process.env.NODE_ENV === "development"
+      ? "http://localhost:3000"
+      : process.env.NUXT_PUBLIC_SITE_URL,
+
+  plugins: [adminClient(), organizationClient(), twoFactorClient()],
+});
+
+// Export for server-side usage
+export { authClient as $auth };
+```
+
+### 2. Authentication Composables
+
+Create `app/composables/useAuth.ts`:
+
+```typescript
+export const useAuth = () => {
+  // Reactive session data
+  const { data: session, pending } = authClient.useSession(useFetch);
+
+  // Computed properties
+  const user = computed(() => session.value?.user ?? null);
+  const isLoggedIn = computed(() => !!session.value?.session);
+  const isLoading = computed(() => pending.value);
+
+  // Authentication methods
+  const signIn = async (email: string, password: string) => {
+    try {
+      const result = await authClient.signIn.email({
+        email,
+        password,
+      });
+
+      if (result.error) {
+        throw createError({
+          statusCode: 401,
+          statusMessage: result.error.message,
+        });
+      }
+
+      await navigateTo("/dashboard");
+      return result;
+    } catch (error) {
+      console.error("Sign in error:", error);
+      throw error;
+    }
+  };
+
+  const signUp = async (email: string, password: string, name: string) => {
+    try {
+      const result = await authClient.signUp.email({
+        email,
+        password,
+        name,
+      });
+
+      if (result.error) {
+        throw createError({
+          statusCode: 400,
+          statusMessage: result.error.message,
+        });
+      }
+
+      return result;
+    } catch (error) {
+      console.error("Sign up error:", error);
+      throw error;
+    }
+  };
+
+  const signOut = async () => {
+    try {
+      await authClient.signOut();
+      await navigateTo("/");
+    } catch (error) {
+      console.error("Sign out error:", error);
+      throw error;
+    }
+  };
+
+  const signInSocial = async (provider: "github" | "google") => {
+    try {
+      await authClient.signIn.social({
+        provider,
+        callbackURL: "/dashboard",
+      });
+    } catch (error) {
+      console.error("Social sign in error:", error);
+      throw error;
+    }
+  };
+
+  return {
+    // State
+    session: readonly(session),
+    user,
+    isLoggedIn,
+    isLoading,
+
+    // Methods
+    signIn,
+    signUp,
+    signOut,
+    signInSocial,
+  };
+};
+
+// Server-side session helper
+export const useServerAuth = () => {
+  return auth.api.getSession({
+    headers: useRequestHeaders(["cookie"]),
+  });
+};
+```
+
+### 3. Global Authentication Middleware
+
+Create `app/middleware/auth.global.ts`:
+
+```typescript
+export default defineNuxtRouteMiddleware(async (to, from) => {
+  // Skip middleware on server-side
+  if (process.server) return;
+
+  // Get session data
+  const { data: session } = await authClient.useSession(useFetch);
+
+  // Protected routes
+  const protectedRoutes = ["/dashboard", "/profile", "/admin"];
+  const isProtectedRoute = protectedRoutes.some((route) =>
+    to.path.startsWith(route)
+  );
+
+  // Redirect to login if accessing protected route without session
+  if (isProtectedRoute && !session.value?.session) {
+    return navigateTo("/auth/signin");
+  }
+
+  // Redirect away from auth pages if already logged in
+  const authRoutes = ["/auth/signin", "/auth/signup"];
+  const isAuthRoute = authRoutes.includes(to.path);
+
+  if (isAuthRoute && session.value?.session) {
+    return navigateTo("/dashboard");
+  }
+});
+```
+
+## Components
+
+### 1. Login Form Component
+
+Create `app/components/auth/LoginForm.vue`:
+
+```vue
+<template>
+  <form @submit.prevent="handleSignIn" class="space-y-4">
+    <div>
+      <label for="email" class="block text-sm font-medium text-gray-700">
+        Email
+      </label>
+      <input
+        id="email"
+        v-model="form.email"
+        type="email"
+        required
+        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+      />
+    </div>
+
+    <div>
+      <label for="password" class="block text-sm font-medium text-gray-700">
+        Password
+      </label>
+      <input
+        id="password"
+        v-model="form.password"
+        type="password"
+        required
+        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+      />
+    </div>
+
+    <button
+      type="submit"
+      :disabled="isLoading"
+      class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+    >
+      {{ isLoading ? "Signing in..." : "Sign In" }}
+    </button>
+
+    <div class="mt-4">
+      <div class="relative">
+        <div class="absolute inset-0 flex items-center">
+          <div class="w-full border-t border-gray-300" />
+        </div>
+        <div class="relative flex justify-center text-sm">
+          <span class="px-2 bg-white text-gray-500">Or continue with</span>
+        </div>
+      </div>
+
+      <div class="mt-4 grid grid-cols-2 gap-3">
+        <button
+          type="button"
+          @click="signInSocial('github')"
+          class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+        >
+          GitHub
+        </button>
+
+        <button
+          type="button"
+          @click="signInSocial('google')"
+          class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+        >
+          Google
+        </button>
+      </div>
+    </div>
+  </form>
+</template>
+
+<script setup lang="ts">
+const { signIn, signInSocial, isLoading } = useAuth();
+
+const form = reactive({
+  email: "",
+  password: "",
+});
+
+const handleSignIn = async () => {
+  try {
+    await signIn(form.email, form.password);
+  } catch (error) {
+    // Error is already handled in the composable
+  }
+};
+</script>
+```
+
+### 2. User Profile Component
+
+Create `app/components/auth/UserProfile.vue`:
+
+```vue
+<template>
+  <div v-if="user" class="bg-white shadow rounded-lg p-6">
+    <div class="flex items-center space-x-4">
+      <img
+        :src="user.image || '/default-avatar.png'"
+        :alt="user.name"
+        class="w-16 h-16 rounded-full"
+      />
+      <div>
+        <h2 class="text-xl font-semibold text-gray-900">{{ user.name }}</h2>
+        <p class="text-gray-600">{{ user.email }}</p>
+        <p class="text-sm text-gray-500">
+          Member since {{ formatDate(user.createdAt) }}
+        </p>
+      </div>
+    </div>
+
+    <div class="mt-6 flex space-x-3">
+      <button
+        @click="navigateTo('/profile/edit')"
+        class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700"
+      >
+        Edit Profile
+      </button>
+
+      <button
+        @click="signOut"
+        class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700"
+      >
+        Sign Out
+      </button>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+const { user, signOut } = useAuth();
+
+const formatDate = (date: string) => {
+  return new Date(date).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
+</script>
+```
+
+## Server-Side Authentication
+
+### 1. Protected API Routes
+
+Create protected API routes in `server/api/v1/`:
+
+```typescript
+// server/api/v1/protected/profile.get.ts
+export default defineEventHandler(async (event) => {
+  // Get session from headers
+  const session = await auth.api.getSession({
+    headers: event.headers,
+  });
+
+  if (!session?.session) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: "Unauthorized",
+    });
+  }
+
+  // Return user profile data
+  return {
+    user: session.user,
+    session: session.session,
+  };
+});
+```
+
+### 2. Server Middleware for Authentication
+
+Create `server/middleware/auth.ts`:
+
+```typescript
+export default defineEventHandler(async (event) => {
+  // Skip non-protected routes
+  if (!event.node.req.url?.startsWith("/api/v1/protected")) {
+    return;
+  }
+
+  const session = await auth.api.getSession({
+    headers: event.headers,
+  });
+
+  if (!session?.session) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: "Authentication required",
+    });
+  }
+
+  // Add session to event context
+  event.context.session = session;
+});
+```
+
+## Environment Configuration
+
+### 1. Environment Variables
+
+Create `.env` file:
+
+```bash
+# Database
+DATABASE_URL="postgresql://user:password@localhost:5432/myapp"
+
+# Better Auth
+BETTER_AUTH_SECRET="your-super-secret-key"
+BETTER_AUTH_URL="http://localhost:3000"
+
+# Social Providers
+GITHUB_CLIENT_ID="your-github-client-id"
+GITHUB_CLIENT_SECRET="your-github-client-secret"
+GOOGLE_CLIENT_ID="your-google-client-id"
+GOOGLE_CLIENT_SECRET="your-google-client-secret"
+
+# Email Service (optional)
+SMTP_HOST="smtp.gmail.com"
+SMTP_PORT="587"
+SMTP_USER="your-email@gmail.com"
+SMTP_PASS="your-app-password"
+```
+
+### 2. Nuxt Configuration
+
+Update `nuxt.config.ts`:
+
+```typescript
+export default defineNuxtConfig({
+  // Nuxt 4 configuration
+  srcDir: "app",
+
+  runtimeConfig: {
+    // Server-side environment variables
+    betterAuthSecret: process.env.BETTER_AUTH_SECRET,
+    githubClientSecret: process.env.GITHUB_CLIENT_SECRET,
+    googleClientSecret: process.env.GOOGLE_CLIENT_SECRET,
+
+    // Public environment variables
+    public: {
+      betterAuthUrl: process.env.BETTER_AUTH_URL || "http://localhost:3000",
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || "http://localhost:3000",
+    },
+  },
+
+  // Enable SSR for better SEO and performance
+  ssr: true,
+
+  // CSS framework
+  css: ["~/assets/css/main.css"],
+
+  // Modules
+  modules: ["@unocss/nuxt", "@primevue/nuxt-module", "@pinia/nuxt"],
+
+  // Nitro configuration for Better Auth
+  nitro: {
+    experimental: {
+      wasm: true,
+    },
+  },
+});
+```
+
+## Database Setup
+
+### 1. PostgreSQL Configuration
+
+Better Auth works directly with PostgreSQL Pool without requiring an ORM. The database connection is configured in the server setup:
+
+```typescript
+// Already configured in server/utils/auth.ts
+database: new Pool({
+  connectionString: process.env.DATABASE_URL,
+})
+```
+
+### 2. Database Migration
+
+```bash
+# Run Better Auth migrations to create required tables
+pnpx @better-auth/cli migrate
+
+# Or generate SQL schema file for manual setup
+pnpx @better-auth/cli generate
+
+# The generated schema can be found in the output directory
+# and manually applied to your database
+```
+
+## Best Practices
+
+### 1. Security Considerations
+
+- Always use HTTPS in production
+- Set secure cookie flags in production
+- Implement rate limiting
+- Validate and sanitize user inputs
+- Use environment variables for secrets
+
+### 2. Error Handling
+
+```typescript
+// app/composables/useAuthError.ts
+export const useAuthError = () => {
+  const handleAuthError = (error: any) => {
+    if (error.statusCode === 401) {
+      // Redirect to login
+      navigateTo("/auth/signin");
+      return;
+    }
+
+    if (error.statusCode === 403) {
+      // Show forbidden message
+      throw createError({
+        statusCode: 403,
+        statusMessage: "Access denied",
+      });
+    }
+
+    // Log other errors
+    console.error("Auth error:", error);
+    throw error;
+  };
+
+  return { handleAuthError };
+};
+```
+
+### 3. Performance Optimization
+
+- Use `useLazyFetch` for session data
+- Implement proper caching strategies
+- Optimize database queries
+- Use server-side rendering where appropriate
+
+### 4. Testing
+
+```typescript
+// tests/auth.test.ts
+import { describe, it, expect } from "vitest";
+import { $fetch } from "ofetch";
+
+describe("Authentication", () => {
+  it("should sign in with valid credentials", async () => {
+    const response = await $fetch("/api/v1/auth/sign-in", {
+      method: "POST",
+      body: {
+        email: "test@example.com",
+        password: "password123",
+      },
+    });
+
+    expect(response.session).toBeDefined();
+    expect(response.user).toBeDefined();
+  });
+
+  it("should protect API routes", async () => {
+    try {
+      await $fetch("/api/v1/protected/profile");
+    } catch (error) {
+      expect(error.statusCode).toBe(401);
+    }
+  });
+});
+```
+
+## Deployment
+
+### 1. Environment Setup
+
+For production deployment, ensure:
+
+- All environment variables are set
+- Database is properly configured
+- HTTPS is enabled
+- CORS is configured for your domain
+
+### 2. Build and Deploy
+
+```bash
+# Build for production
+pnpm build
+
+# Deploy to your preferred platform
+# Vercel, Netlify, Railway, etc.
+```
+
+This guide provides a comprehensive foundation for integrating Better Auth with Nuxt 4, following official best practices and adapting to Nuxt 4's new directory structure.

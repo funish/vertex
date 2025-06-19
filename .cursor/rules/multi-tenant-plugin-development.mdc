@@ -1,0 +1,716 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Multi-Tenant Plugin Development Guidelines
+
+## Core Principles
+
+### 1. Plugin Organization-Agnostic Design
+
+**CRITICAL RULE**: Plugins MUST NOT contain organization-specific logic directly. They should be designed to work with or without multi-tenant context.
+
+```typescript
+// ✅ CORRECT - Organization-agnostic plugin
+export const storagePlugin = (options: StoragePluginOptions) => {
+  return {
+    id: "storage",
+    endpoints: {
+      uploadFile: createAuthEndpoint(
+        "/storage/:key",
+        { method: "POST", body: z.any() },
+        async (ctx) => {
+          // Use organization context if available, fallback to default
+          const tenantCtx = ctx as TenantContext;
+const storage = tenantCtx.getOrganizationStorage?.() || createDefaultStorage(options);
+          await storage.setItem(ctx.params.key, ctx.body);
+          return ctx.json({ success: true });
+        }
+      ),
+    },
+  } satisfies BetterAuthPlugin;
+};
+
+// ❌ INCORRECT - Organization-specific logic in plugin
+export const storagePlugin = (options: StoragePluginOptions) => {
+  return {
+    id: "storage",
+    endpoints: {
+      uploadFile: createAuthEndpoint("/storage/:key", { method: "POST" }, async (ctx) => {
+        // Don't hardcode organization logic
+        const orgId = ctx.request.headers.get("X-Organization-ID");
+        const storage = createOrgStorage(orgId); // BAD!
+        // ...
+      }),
+    },
+  };
+};
+```
+
+### 2. Organization Context Injection Pattern
+
+Use the `TenantContext` interface methods for accessing organization-scoped resources:
+
+```typescript
+interface TenantContext {
+  organization: {
+    id: string;
+    name: string;
+    slug: string;
+    dbSchema: string;
+    storageQuota?: number;
+    apiKeys: OrganizationApiKey[];
+  };
+  getOrganizationStorage: () => Storage;
+  getOrganizationConfig: (pluginId: string) => PluginConfig | null;
+  validateApiKey: (key: string) => Promise<boolean>;
+  
+  // Note: Database operations should use ctx.context.adapter instead of getOrganizationDatabase
+}
+```
+
+**Usage in plugins:**
+
+```typescript
+// Storage access
+const tenantCtx = ctx as TenantContext;
+const storage = tenantCtx.getOrganizationStorage?.() || defaultStorage;
+
+// Database access - use Better Auth adapter instead
+// const db = ctx.context.adapter; // Use this for database operations
+
+// Plugin configuration
+const config = tenantCtx.getOrganizationConfig?.("my-plugin") || defaultConfig;
+```
+
+## API Design Patterns
+
+### 1. Header-based Organization Identification
+
+**REQUIRED**: All organization-scoped API requests MUST use header-based identification:
+
+```http
+POST /api/v1/storage/my-file
+Headers:
+  X-Organization-ID: acme-corp
+  Authorization: Bearer org_acme-corp_api_12345678
+  Content-Type: application/json
+```
+
+**NEVER use path-based organization identification:**
+
+```http
+❌ POST /api/v1/org/acme-corp/storage/my-file  # FORBIDDEN
+```
+
+### 2. API Key Format
+
+Organization API keys MUST follow this pattern:
+- Format: `org_{organizationId}_api_{keyId}`
+- Example: `org_acme-corp_api_12345678`
+
+### 3. Error Handling for Organization Context
+
+```typescript
+// Check for organization context in endpoints
+if (!ctx.organization) {
+  return ctx.json(
+    { success: false, error: "Organization context required" },
+    { status: 400 }
+  );
+}
+```
+
+## Data Isolation Patterns
+
+### 1. Storage Key Prefixing
+
+**AUTOMATIC**: When using `ctx.getOrganizationStorage()`, keys are automatically prefixed:
+
+```typescript
+// User provides key: "user-avatar.jpg"
+// Actual storage key: "org_acme-corp:user-avatar.jpg"
+const storage = ctx.getOrganizationStorage?.() || defaultStorage;
+await storage.setItem("user-avatar.jpg", data); // Automatically prefixed
+```
+
+### 2. Database Schema Isolation
+
+**AUTOMATIC**: When using `ctx.getOrganizationDatabase()`, queries are scoped to organization schema:
+
+```typescript
+// Connects to organization-specific schema: "org_acme_corp_a1b2c3d4"
+const db = ctx.getOrganizationDatabase?.() || defaultDb;
+await db.selectFrom("users").selectAll().execute();
+```
+
+### 3. Configuration Isolation
+
+```typescript
+// Get organization-specific plugin configuration
+const config = ctx.getOrganizationConfig?.("my-plugin") || {
+  // Default configuration
+  maxItems: 1000,
+  allowedTypes: ["image/*", "text/*"],
+};
+```
+
+## Plugin Definition Structure
+
+### 1. Standard Plugin Definition
+
+```typescript
+import { createPluginDefinition } from "../registry/utils";
+import type { TenantContext } from "../tenant";
+
+export interface MyPluginOptions {
+  defaultSetting: string;
+  maxItems?: number;
+}
+
+export const myPlugin = (options: MyPluginOptions = { defaultSetting: "value" }) => {
+  return {
+    id: "my-plugin",
+    
+    // Database schema (if needed)
+    schema: {
+      myPluginData: {
+        fields: {
+          id: { type: "string", required: true },
+          organizationId: { type: "string", required: true }, // Always include for tracking
+          data: { type: "string", required: true },
+          createdAt: { type: "date", required: true },
+        },
+      },
+    },
+    
+    // API endpoints
+    endpoints: {
+      getData: createAuthEndpoint(
+        "/my-plugin/data/:id",
+        { method: "GET" },
+        async (ctx) => {
+          // Organization context validation
+          if (!ctx.organization) {
+            return ctx.json({ error: "Organization context required" }, { status: 400 });
+          }
+          
+          // Use Better Auth adapter for database operations
+          const result = await ctx.context.adapter.findOne({
+            model: "myPluginData",
+            where: [
+              {
+                field: "id",
+                operator: "eq",
+                value: ctx.params.id,
+              },
+              {
+                field: "organizationId",
+                operator: "eq",
+                value: ctx.organization.id,
+                connector: "AND",
+              },
+            ],
+          }) as MyPluginData | null;
+            
+          return ctx.json({ data: result });
+        }
+      ),
+    },
+  } satisfies BetterAuthPlugin;
+};
+
+// Plugin definition for registry
+export const myPluginDefinition = createPluginDefinition({
+  id: "my-plugin",
+  name: "My Plugin",
+  description: "A sample plugin with multi-tenant support",
+  version: "1.0.0",
+  author: "Funish Vertex Team",
+  category: "utility",
+  status: "active",
+  
+  // Configuration schema for organizations
+  configSchema: {
+    type: "object",
+    properties: {
+      maxItems: { type: "number", default: 1000 },
+      allowedTypes: { 
+        type: "array", 
+        items: { type: "string" },
+        default: ["image/*", "text/*"]
+      },
+      customDomain: { type: "string", optional: true },
+    },
+  },
+  
+  serverPlugin: myPlugin,
+  clientPlugin: myPluginClient,
+});
+```
+
+## Schema Definition and Type Generation
+
+### 1. Database Schema Pattern
+
+**REQUIRED**: All plugin schemas must follow this pattern:
+
+```typescript
+import { z } from "zod";
+import { zodToAuthPluginSchema } from "../registry/utils";
+
+// Define Zod schema for type inference
+const myPluginDataSchema = z.object({
+  id: z.string(),
+  organizationId: z.string(), // ALWAYS REQUIRED for multi-tenant support
+  name: z.string(),
+  description: z.string().optional(),
+  isActive: z.boolean(),
+  metadata: z.string().optional(), // Store JSON as string
+  createdAt: z.date(),
+  updatedAt: z.date().optional(),
+});
+
+// Export TypeScript types using z.infer
+export type MyPluginData = z.infer<typeof myPluginDataSchema>;
+```
+
+### 2. Supported Schema Field Types
+
+**ONLY these field types are supported:**
+
+```typescript
+// String fields
+{ type: "string", required: true }  → string
+{ type: "string", required: false } → string | null
+
+// Number fields  
+{ type: "number", required: true }  → number
+{ type: "number", required: false } → number | null
+
+// Boolean fields
+{ type: "boolean", required: true }  → boolean
+{ type: "boolean", required: false } → boolean | null
+
+// Date fields
+{ type: "date", required: true }  → Date
+{ type: "date", required: false } → Date | null
+```
+
+**❌ FORBIDDEN**: Do NOT use `"json"` type - store JSON as string instead.
+
+### 3. Type-Safe Plugin Implementation
+
+```typescript
+export const myPlugin = (options: MyPluginOptions = {}): BetterAuthPlugin => {
+  return {
+    id: "my-plugin",
+    
+    // Convert Zod schema to Better Auth format
+    schema: {
+      myPluginData: zodToAuthPluginSchema(myPluginDataSchema),
+    },
+    
+    endpoints: {
+      createData: createAuthEndpoint(
+        "/my-plugin/data",
+        { 
+          method: "POST", 
+          body: z.object({ 
+            name: z.string(),
+            description: z.string().optional(),
+          })
+        },
+        async (ctx) => {
+          if (!ctx.organization) {
+            return ctx.json({ error: "Organization context required" }, { status: 400 });
+          }
+          
+          // TypeScript knows the exact shape of MyPluginData
+          const newRecord = {
+            organizationId: ctx.organization.id, // Always scope to organization
+            name: ctx.body.name,
+            description: ctx.body.description,
+            isActive: true,
+            createdAt: new Date(),
+          };
+          
+          const result = await ctx.context.adapter.create({
+            model: "myPluginData",
+            data: newRecord,
+          }) as MyPluginData;
+            
+          return ctx.json({ success: true, id: result.id });
+        }
+      ),
+      
+      getData: createAuthEndpoint(
+        "/my-plugin/data/:id",
+        { method: "GET" },
+        async (ctx) => {
+          if (!ctx.organization) {
+            return ctx.json({ error: "Organization context required" }, { status: 400 });
+          }
+          
+          // Type-safe database query using Better Auth adapter
+          const data = await ctx.context.adapter.findOne({
+            model: "myPluginData",
+            where: [
+              {
+                field: "id",
+                operator: "eq",
+                value: ctx.params.id,
+              },
+              {
+                field: "organizationId",
+                operator: "eq",
+                value: ctx.organization.id, // Always scope
+                connector: "AND",
+              },
+            ],
+          }) as MyPluginData | null;
+            
+          if (!data) {
+            return ctx.json({ error: "Data not found" }, { status: 404 });
+          }
+          
+          return ctx.json({ data });
+        }
+      ),
+    },
+  } satisfies BetterAuthPlugin;
+};
+```
+
+### 4. Schema Field References
+
+For foreign key relationships, use the `foreignKeys` option in `zodToAuthPluginSchema`:
+
+```typescript
+const userProfileSchema = z.object({
+  id: z.string(),
+  organizationId: z.string(),
+  userId: z.string(), // Will reference user table
+  profileData: z.string(),
+});
+
+export type UserProfile = z.infer<typeof userProfileSchema>;
+
+// In plugin schema definition
+schema: {
+  userProfile: zodToAuthPluginSchema(userProfileSchema, {
+    foreignKeys: {
+      organizationId: { model: "organization", field: "id" },
+      userId: { model: "user", field: "id" },
+    },
+  }),
+}
+```
+
+### 5. Advanced Schema Features
+
+**Custom Model Names:**
+```typescript
+const userSettingsSchema = z.object({
+  id: z.string(),
+  organizationId: z.string(),
+  // ... other fields
+});
+
+schema: {
+  userSettings: zodToAuthPluginSchema(userSettingsSchema, {
+    modelName: "UserSettings", // Custom database table name
+  }),
+}
+```
+
+**Conditional Migration:**
+```typescript
+const testDataSchema = z.object({
+  id: z.string(),
+  organizationId: z.string(),
+  // ... other fields
+});
+
+schema: {
+  testData: zodToAuthPluginSchema(testDataSchema, {
+    disableMigration: process.env.NODE_ENV === "test", // Skip in tests
+  }),
+}
+```
+
+### 6. Runtime Validation with Zod
+
+Combine generated types with Zod for runtime validation:
+
+```typescript
+import { z } from "zod";
+
+// Zod schema for API validation
+const CreateDataSchema = z.object({
+  name: z.string().min(1).max(100),
+  description: z.string().optional(),
+  isActive: z.boolean().default(true),
+});
+
+// Use in endpoints
+const endpoint = createAuthEndpoint(
+  "/my-plugin/data",
+  { method: "POST", body: CreateDataSchema },
+  async (ctx) => {
+    // ctx.body is now type-safe and validated
+    const { name, description, isActive } = ctx.body;
+    
+    // Create record with generated types
+    const newRecord = {
+      organizationId: ctx.organization.id,
+      name,
+      description,
+      isActive,
+      createdAt: new Date(),
+    };
+    
+    // ... rest of implementation
+  }
+);
+```
+
+### 7. Migration Commands
+
+**Development workflow:**
+
+```bash
+# 1. Generate TypeScript types from schema
+npx @better-auth/cli generate
+
+# 2. Apply database migrations
+npx @better-auth/cli migrate
+
+# 3. Run in development mode
+pnpm dev
+```
+
+**Production deployment:**
+
+```bash
+# Apply migrations before deployment
+npx @better-auth/cli migrate --env production
+```
+
+### 2. Client Plugin Structure
+
+```typescript
+import type { BetterAuthClientPlugin } from "better-auth/client";
+import type { myPlugin } from "./index";
+
+export const myPluginClient = (options?: MyPluginClientOptions) => {
+  return {
+    id: "my-plugin", // Must match server plugin ID
+    
+    // Infer server plugin types
+    $InferServerPlugin: {} as ReturnType<typeof myPlugin>,
+    
+    // Custom client actions
+    getActions: ($fetch) => ({
+      getData: async (id: string, fetchOptions?: any) => {
+        return $fetch(`/my-plugin/data/${id}`, {
+          method: "GET",
+          ...fetchOptions,
+        });
+      },
+    }),
+  } satisfies BetterAuthClientPlugin;
+};
+```
+
+## Database Design Patterns
+
+### 1. Organization Tracking
+
+**REQUIRED**: All plugin database tables MUST include `organizationId` field:
+
+```typescript
+schema: {
+  myPluginTable: {
+    fields: {
+      id: { type: "string", required: true },
+      organizationId: { type: "string", required: true }, // REQUIRED
+      // ... other fields
+    },
+  },
+}
+```
+
+### 2. Query Scoping
+
+**ALWAYS** scope database queries to the current organization:
+
+```typescript
+// ✅ CORRECT - Organization-scoped query using Better Auth adapter
+const result = await ctx.context.adapter.findMany({
+  model: "myTable",
+  where: [
+    {
+      field: "organizationId",
+      operator: "eq",
+      value: ctx.organization.id,
+    },
+  ],
+}) as MyTableData[];
+
+// ❌ INCORRECT - Unscoped query (security risk)
+const result = await ctx.context.adapter.findMany({
+  model: "myTable",
+  where: [], // No organization filtering - DANGEROUS!
+});
+```
+
+## Security Requirements
+
+### 1. Organization Access Validation
+
+**ALWAYS** validate organization access in plugin endpoints:
+
+```typescript
+// Required validation pattern
+if (!ctx.organization) {
+  return ctx.json(
+    { success: false, error: "Organization context required" },
+    { status: 400 }
+  );
+}
+```
+
+### 2. API Key Validation
+
+When implementing custom authentication:
+
+```typescript
+const isValidKey = await ctx.validateApiKey?.(providedKey);
+if (!isValidKey) {
+  return ctx.json({ error: "Invalid API key" }, { status: 401 });
+}
+```
+
+### 3. Data Access Restrictions
+
+**NEVER** allow cross-organization data access:
+
+```typescript
+// ✅ CORRECT - Restricted to organization
+const data = await storage.getItem(`org_${ctx.organization.id}:${key}`);
+
+// ❌ INCORRECT - Could access other organization's data
+const data = await storage.getItem(key);
+```
+
+## Testing Patterns
+
+### 1. Multi-Tenant Test Setup
+
+```typescript
+describe("My Plugin Multi-Tenant", () => {
+  const org1 = { id: "org1", name: "Organization 1" };
+  const org2 = { id: "org2", name: "Organization 2" };
+  
+  it("should isolate data between organizations", async () => {
+    // Test data isolation
+    const ctx1 = createMockContext({ organization: org1 });
+    const ctx2 = createMockContext({ organization: org2 });
+    
+    await plugin.endpoints.setData(ctx1, { key: "test", value: "org1-data" });
+    await plugin.endpoints.setData(ctx2, { key: "test", value: "org2-data" });
+    
+    const result1 = await plugin.endpoints.getData(ctx1, { key: "test" });
+    const result2 = await plugin.endpoints.getData(ctx2, { key: "test" });
+    
+    expect(result1.value).toBe("org1-data");
+    expect(result2.value).toBe("org2-data");
+  });
+});
+```
+
+## Performance Considerations
+
+### 1. Organization Context Caching
+
+The tenant plugin automatically caches organization context to avoid repeated database queries.
+
+### 2. Storage Optimization
+
+Use organization-specific storage drivers when beneficial:
+
+```typescript
+// Plugin can access organization-specific storage configuration
+const orgConfig = ctx.getOrganizationConfig?.("storage");
+const driver = orgConfig?.driver || "memory";
+```
+
+### 3. Database Connection Pooling
+
+Organization-specific database connections are pooled for performance.
+
+## Migration and Deployment
+
+### 1. Schema Migration
+
+When adding new database fields, ensure organization compatibility:
+
+```typescript
+// Migration script should handle organization-specific schemas
+const organizations = await db.selectFrom("organization").selectAll().execute();
+
+for (const org of organizations) {
+  await db.schema
+    .alterTable(`${org.dbSchema}.myPluginTable`)
+    .addColumn("newField", "varchar(255)")
+    .execute();
+}
+```
+
+### 2. Data Migration
+
+When migrating existing data, maintain organization isolation:
+
+```typescript
+// Migrate data per organization using Better Auth adapter
+for (const org of organizations) {
+  const orgData = await adapter.findMany({
+    model: "oldTable",
+    where: [
+      {
+        field: "organizationId",
+        operator: "eq",
+        value: org.id,
+      },
+    ],
+  });
+    
+  // Process organization-specific data...
+  for (const record of orgData) {
+    await adapter.create({
+      model: "newTable",
+      data: {
+        ...record,
+        // Apply data transformations...
+      },
+    });
+  }
+}
+```
+
+## Common Pitfalls to Avoid
+
+1. **❌ Hardcoding organization logic in plugins**
+2. **❌ Using path-based organization identification**
+3. **❌ Forgetting to validate organization context**
+4. **❌ Cross-organization data access**
+5. **❌ Unscoped database queries**
+6. **❌ Storing organization-sensitive data in global storage**
+7. **❌ Missing organizationId in database tables**
+8. **❌ Not testing data isolation between organizations**
+
+
+
+

@@ -1,0 +1,73 @@
+{
+  "name": "funish-vertex",
+  "version": "0.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "build": "pnpm -r build && nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "test": "vitest run",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest --coverage",
+    "test:ui": "vitest --ui",
+    "db:generate": "pnpx @better-auth/cli generate --config ./server/utils/auth.ts --y",
+    "check": "biome check . --write --unsafe",
+    "format": "prettier --write --list-different . --ignore-path .gitignore",
+    "postinstall": "githooks install && nuxt prepare"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/funish/vertex.git"
+  },
+  "author": {
+    "name": "Funish",
+    "email": "official@funish.net",
+    "url": "https://funish.net/"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/funish/vertex/issues"
+  },
+  "homepage": "https://github.com/funish/vertex#readme",
+  "devDependencies": {
+    "@better-auth/cli": "1.2.9",
+    "@better-auth/stripe": "1.2.9",
+    "@biomejs/biome": "2.0.0",
+    "@funish/githooks": "0.0.5",
+    "@funish/githooks-config": "0.0.2",
+    "@funish/lint": "0.0.2",
+    "@funish/vertex": "workspace:*",
+    "@iconify-json/mdi": "1.2.3",
+    "@nuxt/test-utils": "3.19.1",
+    "@nuxtjs/i18n": "9.5.5",
+    "@primeuix/themes": "1.1.2",
+    "@primevue/forms": "4.3.5",
+    "@primevue/nuxt-module": "4.3.5",
+    "@types/node": "24.0.3",
+    "@types/pg": "8.15.4",
+    "@unocss/nuxt": "66.2.3",
+    "@vue/test-utils": "2.4.6",
+    "better-auth": "1.2.9",
+    "happy-dom": "18.0.1",
+    "ioredis": "5.6.1",
+    "kysely": "0.28.2",
+    "nuxt": "3.17.5",
+    "nuxt-mcp": "0.2.3",
+    "pg": "8.16.2",
+    "playwright-core": "1.53.1",
+    "prettier": "3.5.3",
+    "primevue": "4.3.5",
+    "publint": "^0.3.12",
+    "stripe": "18.2.1",
+    "tsdown": "0.12.8",
+    "vite-node": "3.2.4",
+    "vitest": "3.2.4",
+    "zod": "3.25.67"
+  },
+  "packageManager": "pnpm@10.12.1+sha512.f0dda8580f0ee9481c5c79a1d927b9164f2c478e90992ad268bbb2465a736984391d6333d2c327913578b2804af33474ca554ba29c04a8b13060a717675ae3ac",
+  "dependencies": {
+    "postgres": "3.4.7"
+  }
+}

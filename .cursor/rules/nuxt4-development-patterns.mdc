@@ -1,0 +1,511 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Nuxt 4 Development Patterns
+
+## Component Development Patterns
+
+### 1. Component Structure
+```vue
+<template>
+  <div class="component-name">
+    <!-- Use semantic HTML -->
+    <header class="component-name__header">
+      <h2 class="component-name__title">{{ title }}</h2>
+    </header>
+    <main class="component-name__content">
+      <slot />
+    </main>
+  </div>
+</template>
+
+<script setup lang="ts">
+// Define Props interface
+interface Props {
+  title: string
+  variant?: 'primary' | 'secondary'
+  disabled?: boolean
+}
+
+// Use withDefaults to set default values
+const props = withDefaults(defineProps<Props>(), {
+  variant: 'primary',
+  disabled: false
+})
+
+// Define Emits
+const emit = defineEmits<{
+  click: [event: MouseEvent]
+  change: [value: string]
+}>()
+
+// Component state
+const isLoading = ref(false)
+const internalValue = ref('')
+
+// Computed properties
+const computedClass = computed(() => ({
+  'component-name--primary': props.variant === 'primary',
+  'component-name--secondary': props.variant === 'secondary',
+  'component-name--disabled': props.disabled
+}))
+
+// Lifecycle hooks
+onMounted(() => {
+  console.log('Component mounted')
+})
+</script>
+
+<style scoped>
+.component-name {
+  @apply block;
+  
+  &__header {
+    @apply mb-4;
+  }
+  
+  &__title {
+    @apply text-lg font-semibold;
+  }
+  
+  &__content {
+    @apply flex-1;
+  }
+  
+  &--primary {
+    @apply bg-blue-500 text-white;
+  }
+  
+  &--secondary {
+    @apply bg-gray-500 text-white;
+  }
+  
+  &--disabled {
+    @apply opacity-50 pointer-events-none;
+  }
+}
+</style>
+```
+
+### 2. Component Naming Conventions
+- Use PascalCase: `MyComponent.vue`
+- Nested components: `components/base/Button.vue` → `<BaseButton />`
+- Client-side components: `Comments.client.vue`
+- Server-side components: `Comments.server.vue`
+
+### 3. Component Organization
+```
+components/
+  base/
+    Button.vue
+    Input.vue
+    Modal.vue
+  layout/
+    Header.vue
+    Footer.vue
+    Sidebar.vue
+  feature/
+    UserProfile.vue
+    ProductCard.vue
+```
+
+## Composables Development Patterns
+
+### 1. Standard Composable Structure
+```typescript
+// composables/useAuth.ts
+export const useAuth = () => {
+  // State management
+  const user = ref<User | null>(null)
+  const isLoading = ref(false)
+  
+  // Methods
+  const login = async (credentials: LoginCredentials) => {
+    isLoading.value = true
+    try {
+      const response = await $fetch('/api/v1/auth/login', {
+        method: 'POST',
+        body: credentials
+      })
+      user.value = response.user
+      await navigateTo('/dashboard')
+    } catch (error) {
+      throw createError({
+        statusCode: 401,
+        statusMessage: 'Invalid credentials'
+      })
+    } finally {
+      isLoading.value = false
+    }
+  }
+  
+  const logout = async () => {
+    await $fetch('/api/v1/auth/logout', { method: 'POST' })
+    user.value = null
+    await navigateTo('/login')
+  }
+  
+  // Computed properties
+  const isAuthenticated = computed(() => !!user.value)
+  
+  // Return public API
+  return {
+    user: readonly(user),
+    isLoading: readonly(isLoading),
+    isAuthenticated,
+    login,
+    logout
+  }
+}
+```
+
+### 2. State Management Composable
+```typescript
+// composables/useState.ts
+export const useCounter = () => {
+  const count = useState('counter', () => 0)
+  
+  const increment = () => count.value++
+  const decrement = () => count.value--
+  const reset = () => count.value = 0
+  
+  return {
+    count,
+    increment,
+    decrement,
+    reset
+  }
+}
+```
+
+### 3. API Request Composable
+```typescript
+// composables/useApi.ts
+export const useApi = <T>(url: string, options?: any) => {
+  const { data, pending, error, refresh } = useLazyFetch<T>(url, {
+    ...options,
+    transform: (data: any) => data,
+    onRequest({ request, options }) {
+      // Request interceptor
+      console.log('Request:', request)
+    },
+    onResponse({ response }) {
+      // Response interceptor
+      console.log('Response:', response.status)
+    },
+    onResponseError({ response }) {
+      // Error handling
+      console.error('API Error:', response.status)
+    }
+  })
+  
+  return {
+    data,
+    pending,
+    error,
+    refresh
+  }
+}
+```
+
+## Page Development Patterns
+
+### 1. Page Structure
+```vue
+<!-- pages/index.vue -->
+<template>
+  <div class="page-home">
+    <AppHeader />
+    <main class="page-home__content">
+      <section class="hero">
+        <h1>{{ title }}</h1>
+        <p>{{ description }}</p>
+      </section>
+      <section class="features">
+        <FeatureCard
+          v-for="feature in features"
+          :key="feature.id"
+          :feature="feature"
+        />
+      </section>
+    </main>
+    <AppFooter />
+  </div>
+</template>
+
+<script setup lang="ts">
+// Define page metadata
+definePageMeta({
+  title: 'Home Page',
+  description: 'Welcome to our website',
+  layout: 'default'
+})
+
+// SEO setup
+useSeoMeta({
+  title: 'Home - My Site',
+  ogTitle: 'Home - My Site',
+  description: 'Welcome to our amazing website',
+  ogDescription: 'Welcome to our amazing website',
+  ogImage: '/og-image.jpg'
+})
+
+// Data fetching
+const { data: features } = await useLazyFetch('/api/v1/features')
+
+// Page state
+const title = ref('Welcome to Nuxt 4')
+const description = ref('The future of Vue.js development')
+</script>
+
+<style scoped>
+.page-home {
+  @apply min-h-screen;
+  
+  &__content {
+    @apply container mx-auto px-4 py-8;
+  }
+}
+
+.hero {
+  @apply text-center py-12;
+  
+  h1 {
+    @apply text-4xl font-bold mb-4;
+  }
+  
+  p {
+    @apply text-xl text-gray-600;
+  }
+}
+
+.features {
+  @apply grid grid-cols-1 md:grid-cols-3 gap-6 mt-12;
+}
+</style>
+```
+
+### 2. Dynamic Routes
+```vue
+<!-- pages/blog/[slug].vue -->
+<template>
+  <article class="blog-post">
+    <header class="blog-post__header">
+      <h1>{{ post.title }}</h1>
+      <time :datetime="post.publishedAt">
+        {{ formatDate(post.publishedAt) }}
+      </time>
+    </header>
+    <div class="blog-post__content" v-html="post.content" />
+  </article>
+</template>
+
+<script setup lang="ts">
+const route = useRoute()
+const slug = route.params.slug as string
+
+// Data fetching
+const { data: post } = await useLazyFetch(`/api/v1/posts/${slug}`)
+
+if (!post.value) {
+  throw createError({
+    statusCode: 404,
+    statusMessage: 'Post not found'
+  })
+}
+
+// Dynamic SEO
+useSeoMeta({
+  title: post.value.title,
+  description: post.value.excerpt,
+  ogTitle: post.value.title,
+  ogDescription: post.value.excerpt
+})
+
+// Utility functions
+const formatDate = (date: string) => {
+  return new Date(date).toLocaleDateString('en-US')
+}
+</script>
+```
+
+## Server-side API Development Patterns
+
+### 1. API Route Structure
+```typescript
+// server/api/v1/posts/[id].get.ts
+export default defineEventHandler(async (event) => {
+  const id = getRouterParam(event, 'id')
+  
+  // Validate parameters
+  if (!id || isNaN(Number(id))) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Invalid post ID'
+    })
+  }
+  
+  try {
+    // Simulate database query
+    const post = await getPostById(Number(id))
+    
+    if (!post) {
+      throw createError({
+        statusCode: 404,
+        statusMessage: 'Post not found'
+      })
+    }
+    
+    return post
+  } catch (error) {
+    throw createError({
+      statusCode: 500,
+      statusMessage: 'Internal server error'
+    })
+  }
+})
+```
+
+### 2. Middleware Development
+```typescript
+// server/middleware/auth.ts
+export default defineEventHandler(async (event) => {
+  // Apply authentication only to API routes
+  if (!event.node.req.url?.startsWith('/api/v1/')) {
+    return
+  }
+  
+  const token = getHeader(event, 'authorization')?.replace('Bearer ', '')
+  
+  if (!token) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Authorization required'
+    })
+  }
+  
+  try {
+    const user = await verifyToken(token)
+    event.context.user = user
+  } catch (error) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Invalid token'
+    })
+  }
+})
+```
+
+## Error Handling Patterns
+
+### 1. Global Error Handling
+```vue
+<!-- error.vue -->
+<template>
+  <div class="error-page">
+    <div class="error-page__content">
+      <h1>{{ error.statusCode }}</h1>
+      <p>{{ error.statusMessage }}</p>
+      <NuxtLink to="/" class="btn btn-primary">
+        Back to Home
+      </NuxtLink>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+const props = defineProps<{
+  error: {
+    statusCode: number
+    statusMessage: string
+  }
+}>()
+
+// Set error page title
+useSeoMeta({
+  title: `${props.error.statusCode} - Page Error`
+})
+</script>
+```
+
+### 2. Async Error Handling
+```typescript
+// composables/useAsyncError.ts
+export const useAsyncError = () => {
+  const handleError = (error: any) => {
+    if (error.statusCode === 404) {
+      throw createError({
+        statusCode: 404,
+        statusMessage: 'Resource not found'
+      })
+    }
+    
+    if (error.statusCode === 401) {
+      navigateTo('/login')
+      return
+    }
+    
+    // Other errors
+    console.error('Unexpected error:', error)
+    throw createError({
+      statusCode: 500,
+      statusMessage: 'Server error'
+    })
+  }
+  
+  return {
+    handleError
+  }
+}
+```
+
+## Testing Patterns
+
+### 1. Component Testing
+```typescript
+// tests/components/Button.test.ts
+import { describe, it, expect } from 'vitest'
+import { mount } from '@vue/test-utils'
+import Button from '~/components/Button.vue'
+
+describe('Button', () => {
+  it('renders properly', () => {
+    const wrapper = mount(Button, {
+      props: {
+        title: 'Test Button'
+      }
+    })
+    
+    expect(wrapper.text()).toContain('Test Button')
+  })
+  
+  it('emits click event', async () => {
+    const wrapper = mount(Button)
+    
+    await wrapper.trigger('click')
+    
+    expect(wrapper.emitted('click')).toBeTruthy()
+  })
+})
+```
+
+### 2. API Testing
+```typescript
+// tests/api/v1/posts.test.ts
+import { describe, it, expect } from 'vitest'
+import { $fetch } from 'ofetch'
+
+describe('/api/v1/posts', () => {
+  it('returns posts list', async () => {
+    const posts = await $fetch('/api/v1/posts')
+    
+    expect(Array.isArray(posts)).toBe(true)
+    expect(posts.length).toBeGreaterThan(0)
+  })
+})
+```
+
+
+
