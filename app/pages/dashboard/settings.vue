@@ -118,8 +118,8 @@
       <template #header>
         <div class="p-6 pb-0">
           <h2 class="text-xl font-semibold flex items-center gap-2">
-            <i class="i-mdi-shield-check text-xl text-green-500"></i>
-            {{ $t("settings.security.title") }}
+            <i class="i-mdi-shield-check text-xl"></i>
+            <span class="font-medium">Security Settings</span>
           </h2>
         </div>
       </template>
@@ -180,7 +180,7 @@
       <template #header>
         <div class="p-6 pb-0">
           <h2 class="text-xl font-semibold flex items-center gap-2">
-            <i class="i-mdi-bell text-xl text-blue-500"></i>
+            <i class="i-mdi-bell text-xl"></i>
             {{ $t("settings.notifications.title") }}
           </h2>
         </div>

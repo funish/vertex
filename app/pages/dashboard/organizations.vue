@@ -139,7 +139,7 @@
 
     <!-- Empty State -->
     <div v-else-if="!isLoading" class="text-center py-12">
-      <i class="i-mdi-domain text-6xl text-gray-400 mb-4"></i>
+      <i class="i-mdi-domain text-6xl mb-4"></i>
       <p class="text-lg mb-4">{{ $t("organizations.noOrganizations") }}</p>
       <Button
         :label="$t('organizations.createFirst')"

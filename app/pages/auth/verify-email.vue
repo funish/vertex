@@ -5,14 +5,8 @@
         <div class="text-center p-6">
           <div class="flex justify-center mb-4">
             <i v-if="isLoading" class="i-mdi-loading animate-spin text-4xl"></i>
-            <i
-              v-else-if="error"
-              class="i-mdi-email-alert text-4xl text-red-500"
-            ></i>
-            <i
-              v-else-if="success"
-              class="i-mdi-email-check text-4xl text-green-500"
-            ></i>
+            <i v-else-if="error" class="i-mdi-email-alert text-4xl"></i>
+            <i v-else-if="success" class="i-mdi-email-check text-4xl"></i>
             <i v-else class="i-mdi-email-outline text-4xl"></i>
           </div>
           <h1 class="text-2xl font-bold mb-2">

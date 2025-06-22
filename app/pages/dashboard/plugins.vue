@@ -121,7 +121,9 @@
 
     <!-- Empty State -->
     <div v-else-if="!isLoading" class="text-center py-12">
-      <i class="i-mdi-puzzle text-6xl text-gray-400 mb-4"></i>
+      <i
+        class="i-mdi-puzzle text-6xl mb-4 text-surface-400 dark:text-surface-600"
+      ></i>
       <p class="text-lg mb-4">{{ $t("plugins.noAvailable") }}</p>
       <Button
         :label="$t('plugins.refresh')"
@@ -152,7 +154,7 @@
         </Message>
 
         <div class="text-center py-8">
-          <i class="i-mdi-cog text-6xl text-gray-400 mb-2"></i>
+          <i class="i-mdi-cog text-6xl mb-2"></i>
           <p>{{ $t("plugins.configurationComingSoon") }}</p>
         </div>
       </div>

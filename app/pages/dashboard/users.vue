@@ -449,9 +449,7 @@ const getUserInitials = (name: string): string => {
 
 const getRoleSeverity = (role: string): string => {
   const severities: Record<string, string> = {
-    admin: "danger",
-    member: "success",
-    viewer: "secondary",
+    admin: "primary",
   };
   return severities[role] || "secondary";
 };

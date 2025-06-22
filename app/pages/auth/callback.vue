@@ -4,33 +4,19 @@
       <template #content>
         <div class="text-center p-6">
           <div class="flex justify-center mb-4">
-            <i v-if="isLoading" class="i-mdi-loading animate-spin text-4xl"></i>
-            <i
-              v-else-if="error"
-              class="i-mdi-alert-circle text-4xl text-red-500"
-            ></i>
-            <i v-else class="i-mdi-check-circle text-4xl text-green-500"></i>
+            <i v-if="error" class="i-mdi-alert-circle text-4xl"></i>
+            <i v-else class="i-mdi-check-circle text-4xl"></i>
           </div>
-
           <h1 class="text-2xl font-bold mb-2">
             {{
-              isLoading
-                ? "Processing..."
-                : error
-                  ? "Authentication Failed"
-                  : "Success!"
+              error ? $t("auth.callback.error") : $t("auth.callback.success")
             }}
           </h1>
-
-          <p v-if="isLoading">
-            {{ $t("auth.callback.processing") }}
-          </p>
-          <p v-else-if="error" class="text-red-600">
+          <p v-if="isLoading">{{ $t("auth.callback.processing") }}</p>
+          <p v-else-if="error">
             {{ error }}
           </p>
-          <p v-else class="text-green-600">
-            {{ $t("auth.callback.success") }}
-          </p>
+          <p v-else>{{ $t("auth.callback.redirecting") }}</p>
 
           <Button
             v-if="error"

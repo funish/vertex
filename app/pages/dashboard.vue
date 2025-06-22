@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen">
+  <div class="h-screen">
     <!-- Top Toolbar -->
-    <Toolbar class="border-0">
+    <Toolbar>
       <template #start>
         <div class="flex items-center gap-2">
           <i class="i-mdi-hexagon-multiple text-2xl"></i>
@@ -53,7 +53,10 @@
     </Toolbar>
 
     <!-- Main Layout with Splitter -->
-    <Splitter class="h-[calc(100vh-4rem)]">
+    <Splitter
+      class="border-0"
+      style="height: calc(100vh - var(--p-toolbar-height, 4rem) - 0.2rem)"
+    >
       <!-- Sidebar Panel -->
       <SplitterPanel :size="15" :minSize="15">
         <div class="h-full flex flex-col">
@@ -89,7 +92,7 @@
       </SplitterPanel>
 
       <!-- Main Content Panel -->
-      <SplitterPanel :size="80">
+      <SplitterPanel :size="85">
         <div class="h-full overflow-auto">
           <NuxtPage />
         </div>

@@ -31,7 +31,7 @@ This document details the architecture and implementation of the plugin registry
   - `filter(...)`: Filters plugins based on category, status, or a search term.
   - `getBetterAuthPlugins(configs)`: Takes an array of `OrganizationPluginConfig` and returns `{ server, client }` arrays of instantiated Better Auth plugins, ready to be passed to the main `betterAuth` instance.
 
-- **`platformRegistryPlugin`**: A built-in Better Auth plugin that exposes the registry's `filter` and `get` capabilities via API endpoints (`/platform/plugins` and `/platform/plugins/:id`). This allows a frontend application to query for available plugins.
+- **`registryPlugin`**: A built-in Better Auth plugin that exposes the registry's `filter` and `get` capabilities via API endpoints (`/registry/plugins` and `/registry/plugins/:id`). This allows a frontend application to query for available plugins.
 
 ### 3. Plugin Registration (`register.ts`)
 
@@ -447,7 +447,7 @@ This approach ensures that all plugins follow consistent patterns while maintain
 The new architecture follows a clean, decoupled flow:
 
 1.  **Initialization**: On server start, `initializePluginSystem` is called, registering all built-in `PluginDefinition`s into the `globalPluginRegistry`.
-2.  **Discovery (Optional)**: A frontend admin panel can call the `/platform/plugins` endpoint (provided by `platformRegistryPlugin`) to get a list of all available plugins and render a marketplace or settings UI.
+2.  **Discovery (Optional)**: A frontend admin panel can call the `/registry/plugins` endpoint (provided by `registryPlugin`) to get a list of all available plugins and render a marketplace or settings UI.
 3.  **Configuration**: An organization admin enables and configures plugins via the UI. These settings are saved as `OrganizationPluginConfig` records in the database (this logic is handled by the main application, not the registry).
 4.  **Instantiation**: When a request for a specific organization arrives, the main application:
     a. Fetches all `OrganizationPluginConfig` records from the database.

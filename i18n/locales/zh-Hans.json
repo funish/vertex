@@ -5,37 +5,17 @@
   },
   "auth": {
     "signin": {
-      "title": "登录到 Funish Vertex",
-      "subtitle": "欢迎回来，请登录您的账户",
-      "email": "邮箱地址",
+      "title": "登录",
+      "email": "邮箱",
       "password": "密码",
-      "remember": "记住我",
-      "submit": "登录",
-      "orContinueWith": "或使用以下方式继续",
-      "noAccount": "还没有账户？",
-      "signUp": "注册",
-      "forgotPassword": "忘记密码？",
-      "error": {
-        "required": "请输入您的邮箱地址",
-        "invalid": "请输入有效的邮箱地址",
-        "passwordRequired": "请输入您的密码",
-        "passwordShort": "密码至少需要6个字符",
-        "loginFailed": "登录失败，请检查您的凭据",
-        "general": "登录过程中发生错误，请稍后再试"
-      }
+      "submit": "登录"
     },
     "signup": {
-      "title": "注册 Funish Vertex",
-      "subtitle": "创建您的账户以开始使用强大的多租户平台",
-      "name": "姓名",
-      "email": "邮箱地址",
+      "title": "注册",
+      "email": "邮箱",
       "password": "密码",
       "confirmPassword": "确认密码",
-      "terms": "我同意",
-      "termsLink": "服务条款",
-      "and": "和",
-      "privacyLink": "隐私政策",
-      "submit": "创建账户",
+      "submit": "注册",
       "orContinueWith": "或使用以下方式继续",
       "hasAccount": "已有账户？",
       "signIn": "登录",
@@ -93,60 +73,70 @@
       "github": "使用 GitHub 继续",
       "microsoft": "使用 Microsoft 继续"
     },
-    "signOut": "登出"
+    "signOut": "退出登录"
   },
   "dashboard": {
     "title": "仪表板",
-    "welcome": "欢迎回来，{org}！",
+    "welcome": "欢迎使用 Funish Vertex",
+    "overview": "系统概览和统计",
     "currentOrganization": "当前组织",
     "selectOrganization": "选择组织",
-    "description": "监控您组织的活动和性能",
     "stats": {
       "totalUsers": "总用户数",
-      "activePlugins": "活跃插件",
-      "apiCalls": "API调用",
-      "uptime": "正常运行时间"
+      "activeOrganizations": "活跃组织",
+      "enabledPlugins": "已启用插件",
+      "apiRequests": "API 请求"
     },
-    "recentActivity": {
-      "title": "最近活动",
-      "viewAll": "查看全部"
-    },
-    "quickActions": {
-      "title": "快速操作",
-      "inviteUser": "邀请用户",
-      "addPlugin": "添加插件",
-      "createApiKey": "创建API密钥",
-      "viewSettings": "查看设置"
-    },
-    "activities": {
-      "userJoined": "{user} 加入了组织",
-      "pluginEnabled": "{plugin} 插件已启用",
-      "apiKeyCreated": "API密钥 {key} 已创建"
-    },
+    "recentActivity": "最近活动",
+    "quickActions": "快速操作",
     "viewAll": "查看全部"
   },
   "nav": {
     "dashboard": "仪表板",
-    "organizations": "组织",
-    "users": "用户",
     "plugins": "插件",
-    "apiKeys": "API密钥",
+    "users": "用户",
+    "organizations": "组织",
     "permissions": "权限",
+    "apiKeys": "API 密钥",
     "settings": "设置"
   },
   "landing": {
-    "subtitle": "强大的多租户认证平台",
-    "welcome": "开始使用",
-    "description": "登录或注册以管理您的多租户认证服务",
-    "features": "核心特性",
+    "subtitle": "低代码后端平台",
+    "welcome": "欢迎",
+    "description": "无需复杂基础设施，构建强大的后端解决方案。数据库、API、认证等功能一应俱全。",
+    "features": "平台特性",
     "secure": "安全",
     "fast": "快速",
     "extensible": "可扩展",
-    "rights": "保留所有权利"
+    "rights": "版权所有。",
+    "signinDescription": "访问您的现有账户",
+    "signupDescription": "创建新账户",
+    "secureDescription": "企业级安全，支持多因素认证和加密",
+    "fastDescription": "高性能认证，最小延迟",
+    "extensibleDescription": "模块化插件系统，支持自定义集成和工作流",
+    "database": "数据库",
+    "api": "API 生成",
+    "plugins": "插件系统",
+    "databaseDescription": "内置数据库，支持迁移、模式和实时功能",
+    "apiDescription": "自动生成的 REST API，包含认证和验证",
+    "pluginsDescription": "可扩展的插件架构，支持自定义业务逻辑"
   },
   "plugins": {
     "title": "插件管理",
-    "description": "使用强大的插件管理和扩展您的平台",
+    "description": "管理和配置系统插件",
+    "name": "名称",
+    "description": "描述",
+    "version": "版本",
+    "status": "状态",
+    "actions": "操作",
+    "enabled": "已启用",
+    "disabled": "已禁用",
+    "enable": "启用",
+    "disable": "禁用",
+    "type": {
+      "core": "核心",
+      "extension": "扩展"
+    },
     "addPlugin": "添加插件",
     "refresh": "刷新",
     "search": "搜索插件...",
@@ -156,16 +146,10 @@
     "install": "安装",
     "uninstall": "卸载",
     "configure": "配置",
-    "enable": "启用",
-    "disable": "禁用",
-    "installCustom": "安装自定义插件",
     "pluginUrl": "插件地址",
     "pluginUrlPlaceholder": "https://example.com/plugin.zip",
     "apiKey": "API密钥 (可选)",
     "apiKeyPlaceholder": "如需要请输入API密钥",
-
-    "enabled": "已启用",
-    "disabled": "已禁用",
     "noAvailable": "没有可用的插件",
     "retry": "重试",
     "configInfo": "插件配置",
@@ -233,7 +217,10 @@
     "update": "更新",
     "loading": "加载中...",
     "error": "错误",
-    "success": "成功"
+    "success": "成功",
+    "name": "名称",
+    "status": "状态",
+    "actions": "操作"
   },
   "organizations": {
     "title": "组织管理",
