@@ -2,13 +2,15 @@
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "files": {
     "includes": [
-      "app/**",
+      "app/**/*.ts",
+      "app/**/*.js",
       "packages/**",
       "server/**",
       "./*.config.ts",
       "!**/*/dist/**/*",
       "!**/*/.nuxt/**/*",
-      "!**/*/.output/**/*"
+      "!**/*/.output/**/*",
+      "!**/*.vue"
     ]
   },
   "formatter": {

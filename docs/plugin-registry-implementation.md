@@ -18,7 +18,8 @@ This document details the architecture and implementation of the plugin registry
 - **`PluginDefinition`**: The central interface. It defines the metadata for a plugin and contains optional `serverPlugin` and `clientPlugin` factory functions.
 - **`OrganizationPluginConfig`**: Defines the shape of the configuration for a specific plugin enabled for a specific organization.
 - **`PluginCategory` & `PluginStatus`**: Enums used for organizing and filtering plugins in the UI.
-- **`TenantContext`**: Interface for organization context injection into plugin endpoints.
+- **`Tenant`**: Simplified interface for organization context, extending Better Auth's organization schema with tenant-specific fields.
+- **`ContextWithOrganization`**: Helper type for type-safe context access.
 
 ### 2. Registry Implementation (`registry.ts`)
 
@@ -43,32 +44,62 @@ The **Tenant Plugin** is a special plugin that provides multi-tenant capabilitie
 
 #### 4.1 Organization Context Injection
 
-The Tenant Plugin automatically injects organization context into request contexts for all API endpoints:
+The Tenant Plugin uses Better Auth's native hooks system to inject organization context:
 
 ```typescript
-// Tenant Plugin middleware
-{
-  path: "/api/v1/*",
-  middleware: async (ctx) => {
-    const orgId = ctx.request.headers.get("X-Organization-ID");
-    const authHeader = ctx.request.headers.get("Authorization");
-    const apiKey = authHeader?.replace("Bearer ", "");
+// Tenant Plugin with Better Auth hooks
+export const tenantPlugin = (): BetterAuthPlugin => {
+  return {
+    id: "tenant",
 
-    // Validate organization access
-    const organization = await validateOrganizationAccess(orgId, apiKey);
+    // Extend Better Auth's organization schema
+    schema: {
+      organization: {
+        fields: {
+          dbSchema: { type: "string", required: false },
+          authConfig: { type: "string", required: false }, // JSON string
+          pluginConfigs: { type: "string", required: false }, // JSON string
+          customDomain: { type: "string", required: false },
+        },
+      },
+    },
 
-    if (!organization) {
-      return ctx.json({ error: "Invalid organization or API key" }, { status: 401 });
-    }
+    // Use Better Auth hooks for organization context injection
+    hooks: {
+      before: [
+        {
+          matcher: (ctx) => ctx.path.startsWith("/api/v1/"),
+          handler: async (ctx) => {
+            const orgId = ctx.headers["x-organization-id"];
+            if (orgId) {
+              // Validate organization and inject into context
+              const organization = await getOrganizationFromDatabase(orgId);
+              if (organization) {
+                (ctx.context as any).organization = organization;
+              }
+            }
+            return ctx;
+          },
+        },
+      ],
+    },
 
-    // Inject organization context
-    ctx.organization = organization;
-    ctx.getOrganizationStorage = () => createOrgStorage(organization.id);
-    ctx.getOrganizationDatabase = () => getOrgDatabase(organization.dbSchema);
-    ctx.getOrganizationConfig = (pluginId) => getPluginConfig(organization.id, pluginId);
-    ctx.validateApiKey = (key) => validateOrgApiKey(organization.id, key);
-  },
-}
+    endpoints: {
+      getConfig: "/tenant/config",
+      updateConfig: "/tenant/config",
+      initializeTenant: "/tenant/initialize",
+      getStats: "/tenant/stats",
+    },
+  };
+};
+
+// Helper function for type-safe organization access
+export const getOrganizationFromContext = (ctx: {
+  context: unknown;
+}): Tenant | undefined => {
+  const context = ctx.context as { organization?: Tenant };
+  return context.organization;
+};
 ```
 
 #### 4.2 Data Isolation Implementation
@@ -113,22 +144,59 @@ Headers:
 
 #### 4.4 Transparent Integration
 
-Core plugins remain organization-agnostic while gaining multi-tenant capabilities:
+Core plugins remain organization-agnostic while gaining multi-tenant capabilities using the helper function:
 
 ```typescript
-// Storage Plugin - no organization-specific code
+// Storage Plugin - uses helper function for organization context
 export const storagePlugin = (options) => {
   return {
     id: "storage",
     endpoints: {
       getItem: createAuthEndpoint(
         "/storage/:key",
-        { method: "GET" },
+        {
+          method: "GET",
+          use: [sessionMiddleware],
+        },
         async (ctx) => {
-          // Automatically gets organization-scoped storage if tenant plugin is active
-          const storage = ctx.getOrganizationStorage?.() || defaultStorage;
+          // Get organization context using helper function
+          const organization = getOrganizationFromContext(ctx);
+          const organizationId = organization?.id;
+
+          if (!organizationId) {
+            return ctx.json(
+              { error: "Organization context required" },
+              { status: 400 },
+            );
+          }
+
+          // Create organization-scoped storage
+          const storage = await getOrganizationStorage(organizationId);
           const value = await storage.getItem(ctx.params.key);
           return ctx.json({ value });
+        },
+      ),
+
+      setItem: createAuthEndpoint(
+        "/storage/:key",
+        {
+          method: "POST",
+          use: [sessionMiddleware],
+        },
+        async (ctx) => {
+          const organization = getOrganizationFromContext(ctx);
+          const organizationId = organization?.id;
+
+          if (!organizationId) {
+            return ctx.json(
+              { error: "Organization context required" },
+              { status: 400 },
+            );
+          }
+
+          const storage = await getOrganizationStorage(organizationId);
+          await storage.setItem(ctx.params.key, ctx.body);
+          return ctx.json({ success: true });
         },
       ),
     },
@@ -172,7 +240,8 @@ export const getEnabledPlugins = async (organizationId: string) => {
 
 - **`getEnabledPlugins(organizationId, configs)`**: A helper function that filters a list of all organization plugin configs to find the ones enabled for a specific organization, then uses the registry's `getBetterAuthPlugins` method to get the instantiated plugins.
 - **`createPluginDefinition(config)`**: A utility function to create standardized plugin definitions with proper typing.
-- **`validateOrganizationAccess(orgId, apiKey)`**: Validates organization access using API key authentication.
+- **`getOrganizationFromContext(ctx)`**: Helper function for type-safe organization context access across all plugins.
+- **`zodToAuthPluginSchema(zodSchema, options)`**: Utility function to convert Zod schemas to Better Auth compatible format.
 
 ### 7. Schema Definition and Type Generation
 
@@ -435,22 +504,30 @@ export const storagePlugin = (options) => {
 
 ### 2. Context Injection Pattern
 
-Use the injected context methods for organization-scoped resources:
+Use the helper function for organization-scoped resource access:
 
 ```typescript
-// Available context methods from Tenant Plugin
-interface TenantContext {
-  organization: Organization;
-  getOrganizationStorage: () => Storage;
-  getOrganizationDatabase: () => Database;
-  getOrganizationConfig: (pluginId: string) => PluginConfig | null;
-  validateApiKey: (key: string) => Promise<boolean>;
+// Available through helper function
+import { getOrganizationFromContext, type Tenant } from "../tenant";
+
+// In plugin endpoints
+const organization = getOrganizationFromContext(ctx);
+const organizationId = organization?.id;
+
+if (!organizationId) {
+  return ctx.json({ error: "Organization context required" }, { status: 400 });
 }
+
+// Access organization data
+const orgConfig = organization.pluginConfigs
+  ? JSON.parse(organization.pluginConfigs)
+  : {};
+const pluginConfig = orgConfig[pluginId] || {};
 ```
 
 ### 3. Configuration Schema Design
 
-Design plugin configurations to be organization-specific:
+Design plugin configurations to be organization-specific and stored in the organization's `pluginConfigs` field:
 
 ```typescript
 export const myPluginDefinition = createPluginDefinition({
@@ -466,6 +543,31 @@ export const myPluginDefinition = createPluginDefinition({
   },
   serverPlugin: (config) => myPlugin(config),
 });
+
+// Plugin implementation accessing organization config
+export const myPlugin = (options) => {
+  return {
+    id: "my-plugin",
+    endpoints: {
+      someEndpoint: createAuthEndpoint(
+        "/my-plugin/action",
+        { method: "POST", use: [sessionMiddleware] },
+        async (ctx) => {
+          const organization = getOrganizationFromContext(ctx);
+          const orgConfig = organization?.pluginConfigs
+            ? JSON.parse(organization.pluginConfigs)
+            : {};
+          const pluginConfig = orgConfig["my-plugin"] || {};
+
+          // Use plugin config for organization-specific behavior
+          const maxItems =
+            pluginConfig.maxItems || options.defaultMaxItems || 100;
+          // ... rest of implementation
+        },
+      ),
+    },
+  };
+};
 ```
 
 This design is simple, robust, and aligns perfectly with Better Auth's intended use, allowing for easy integration of both official and custom plugins while maintaining complete organization isolation.

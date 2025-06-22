@@ -12,7 +12,7 @@ import {
   createPluginDefinition,
   zodToAuthPluginSchema,
 } from "../registry/utils";
-import type { TenantContext } from "../tenant";
+import { getOrganizationFromContext } from "../tenant";
 import { gatewayClientPlugin } from "./client";
 
 // --- Type Definitions ---
@@ -136,8 +136,8 @@ export const gatewayPlugin = (
           use: [sessionMiddleware],
         },
         async (ctx) => {
-          const tenantCtx = ctx as TenantContext;
-          const organizationId = tenantCtx.organization?.id;
+          const organization = getOrganizationFromContext(ctx);
+          const organizationId = organization?.id;
 
           if (!organizationId) {
             return ctx.json(
@@ -213,8 +213,8 @@ export const gatewayPlugin = (
             })
             .parse(ctx.body);
 
-          const tenantCtx = ctx as TenantContext;
-          const organizationId = tenantCtx.organization?.id;
+          const organization = getOrganizationFromContext(ctx);
+          const organizationId = organization?.id;
 
           if (!organizationId) {
             return ctx.json(
@@ -333,8 +333,8 @@ export const gatewayPlugin = (
         async (ctx) => {
           const { path } = ctx.params;
           const decodedPath = decodeURIComponent(path);
-          const tenantCtx = ctx as TenantContext;
-          const organizationId = tenantCtx.organization?.id;
+          const organization = getOrganizationFromContext(ctx);
+          const organizationId = organization?.id;
 
           if (!organizationId) {
             return ctx.json(
@@ -415,8 +415,8 @@ export const gatewayPlugin = (
         async (ctx) => {
           const { path } = ctx.params;
           const decodedPath = decodeURIComponent(path);
-          const tenantCtx = ctx as TenantContext;
-          const organizationId = tenantCtx.organization?.id;
+          const organization = getOrganizationFromContext(ctx);
+          const organizationId = organization?.id;
 
           if (!organizationId) {
             return ctx.json(
@@ -505,8 +505,8 @@ export const gatewayPlugin = (
           use: [sessionMiddleware],
         },
         async (ctx) => {
-          const tenantCtx = ctx as TenantContext;
-          const organizationId = tenantCtx.organization?.id;
+          const organization = getOrganizationFromContext(ctx);
+          const organizationId = organization?.id;
 
           try {
             let totalRoutes = 0;
@@ -572,7 +572,7 @@ export const gatewayPluginDefinition = createPluginDefinition(gatewayPlugin, {
   name: "API Gateway",
   description:
     "Provides edge routing gateway with dynamic route management and organization-scoped routing, following Better Auth patterns.",
-  category: "utility",
+
   status: "active",
   clientPlugin: gatewayClientPlugin,
 });

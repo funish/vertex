@@ -1,4 +1,5 @@
 import { defineNuxtConfig } from "nuxt/config";
+import { FunishVertexTheme } from "./app/utils/theme";
 
 export default defineNuxtConfig({
   future: {
@@ -50,4 +51,18 @@ export default defineNuxtConfig({
       optimizeTranslationDirective: false,
     },
   },
+
+  primevue: {
+    options: {
+      theme: {
+        preset: FunishVertexTheme,
+        options: {
+          darkModeSelector: ".app-dark",
+          cssLayer: false,
+        },
+      },
+    },
+  },
+
+  css: ["@unocss/reset/normalize.css"],
 });

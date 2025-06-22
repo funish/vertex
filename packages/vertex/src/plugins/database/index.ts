@@ -1,12 +1,12 @@
 import type { Adapter, BetterAuthPlugin } from "better-auth";
 import { createAuthEndpoint, sessionMiddleware } from "better-auth/api";
-import type { organizationSchema } from "better-auth/plugins";
+import type { Organization } from "better-auth/plugins/organization";
 import { z } from "zod";
 import {
   createPluginDefinition,
   zodToAuthPluginSchema,
 } from "../registry/utils";
-import type { TenantContext } from "../tenant";
+import { getOrganizationFromContext } from "../tenant";
 import { databaseClientPlugin } from "./client";
 
 /**
@@ -70,13 +70,6 @@ export const dbConnectionSchema = z.object({
 export type DbQuery = z.infer<typeof dbQuerySchema>;
 export type DbTable = z.infer<typeof dbTableSchema>;
 export type DbConnection = z.infer<typeof dbConnectionSchema>;
-
-// Organization type for Better Auth with our extensions
-export type Organization = z.infer<typeof organizationSchema> & {
-  databaseMode?: string;
-  defaultDatabaseId?: string;
-  internalDbSchema?: string;
-};
 
 // Database provider interfaces
 export interface QueryResult {
@@ -250,8 +243,9 @@ class OrganizationDatabaseManager {
   ): Promise<DatabaseProvider> {
     const cacheKey = `${organizationId}:${databaseId}`;
 
-    if (this.providers.has(cacheKey)) {
-      return this.providers.get(cacheKey)!;
+    const cachedProvider = this.providers.get(cacheKey);
+    if (cachedProvider) {
+      return cachedProvider;
     }
 
     let provider: DatabaseProvider;
@@ -271,13 +265,8 @@ class OrganizationDatabaseManager {
   ): Promise<InternalDatabaseProvider> {
     const org = await this.getOrganization(organizationId);
 
-    let schemaName = org.internalDbSchema;
-    if (!schemaName) {
-      schemaName = await this.createOrganizationSchema(
-        organizationId,
-        org.slug,
-      );
-    }
+    // Generate schema name dynamically based on organization
+    const schemaName = `${this.schemaPrefix}${org.slug}_${organizationId.substring(0, 8)}`;
 
     return new InternalDatabaseProvider(
       organizationId,
@@ -293,37 +282,6 @@ class OrganizationDatabaseManager {
     // TODO: Implement external database provider creation
     // This will be implemented in the second phase
     throw new Error("External database connections not yet implemented");
-  }
-
-  private async createOrganizationSchema(
-    organizationId: string,
-    slug: string,
-  ): Promise<string> {
-    const schemaName = `${this.schemaPrefix}${slug}_${organizationId.substring(0, 8)}`;
-
-    try {
-      // For Better Auth internal database, we don't create actual schemas
-      // Instead, we just record the schema name for logical separation
-      // The actual data isolation will be handled at the application level
-
-      // Update organization record with schema name
-      await this.betterAuthAdapter.update({
-        model: "organization",
-        where: [{ field: "id", operator: "eq", value: organizationId }],
-        update: { internalDbSchema: schemaName },
-      });
-
-      console.log(
-        `[Database] Assigned schema name ${schemaName} for organization ${organizationId}`,
-      );
-      return schemaName;
-    } catch (error) {
-      console.error(
-        `[Database] Failed to assign schema for organization ${organizationId}:`,
-        error,
-      );
-      throw error;
-    }
   }
 
   private async getOrganization(organizationId: string): Promise<Organization> {
@@ -346,12 +304,15 @@ class OrganizationDatabaseManager {
   }> {
     const org = await this.getOrganization(organizationId);
 
+    // Generate schema name for internal database
+    const internalSchemaName = `${this.schemaPrefix}${org.slug}_${organizationId.substring(0, 8)}`;
+
     // Get internal database info
     const internal = {
       id: "internal",
       name: "Internal Database",
-      schema: org.internalDbSchema || "Not created",
-      status: org.internalDbSchema ? "active" : "pending",
+      schema: internalSchemaName,
+      status: "active",
     };
 
     // Get external database connections
@@ -369,10 +330,16 @@ class OrganizationDatabaseManager {
       status: conn.isActive ? "active" : "inactive",
     }));
 
+    // Find default database from connections, fallback to "internal"
+    const defaultConnection = (externalConnections as DbConnection[]).find(
+      (conn) => conn.isActive,
+    );
+    const defaultId = defaultConnection?.id || "internal";
+
     return {
       internal,
       external,
-      defaultId: org.defaultDatabaseId || "internal",
+      defaultId,
     };
   }
 
@@ -415,7 +382,7 @@ export const databasePlugin = (
 ): BetterAuthPlugin => {
   const {
     schemaPrefix = "org_",
-    supportedDatabases = ["postgresql", "mysql", "sqlite"],
+    supportedDatabases: _supportedDatabases = ["postgresql", "mysql", "sqlite"], // Reserved for future use
   } = options;
 
   // Create database manager instance
@@ -434,36 +401,22 @@ export const databasePlugin = (
 
     // Better Auth schema definitions using converted Zod schemas
     schema: {
-      // Extend organization table with database-specific fields
-      organization: {
-        fields: {
-          databaseMode: {
-            type: "string", // 'internal' | 'external' | 'hybrid'
-            required: false,
-          },
-          defaultDatabaseId: {
-            type: "string", // Default database to use
-            required: false,
-          },
-          internalDbSchema: {
-            type: "string", // Schema name for internal database
-            required: false,
-          },
-        },
-      },
+      // Database connection configuration (create first, no dependencies)
+      dbConnection: zodToAuthPluginSchema(dbConnectionSchema),
 
-      // Convert Zod schemas to Better Auth format
+      // Database query logs (references dbConnection)
       dbQuery: zodToAuthPluginSchema(dbQuerySchema, {
         foreignKeys: {
           databaseId: { model: "dbConnection", field: "id" },
         },
       }),
+
+      // Database table metadata (references dbConnection)
       dbTable: zodToAuthPluginSchema(dbTableSchema, {
         foreignKeys: {
           databaseId: { model: "dbConnection", field: "id" },
         },
       }),
-      dbConnection: zodToAuthPluginSchema(dbConnectionSchema),
     },
 
     // Initialize database manager with Better Auth adapter
@@ -503,8 +456,8 @@ export const databasePlugin = (
           use: [sessionMiddleware],
         },
         async (ctx) => {
-          const tenantCtx = ctx as TenantContext;
-          const organizationId = tenantCtx.organization?.id;
+          const organization = getOrganizationFromContext(ctx);
+          const organizationId = organization?.id;
 
           if (!organizationId) {
             return ctx.json(
@@ -514,7 +467,9 @@ export const databasePlugin = (
           }
 
           try {
-            const manager = ensureDatabaseManager(ctx.context.adapter);
+            const manager = ensureDatabaseManager(
+              ctx.context.adapter as Adapter,
+            );
             const sources = await manager.getAvailableDatabases(organizationId);
 
             return ctx.json({
@@ -554,8 +509,8 @@ export const databasePlugin = (
             })
             .parse(ctx.body);
 
-          const tenantCtx = ctx as TenantContext;
-          const organizationId = tenantCtx.organization?.id;
+          const organization = getOrganizationFromContext(ctx);
+          const organizationId = organization?.id;
 
           if (!organizationId) {
             return ctx.json(
@@ -638,8 +593,8 @@ export const databasePlugin = (
               "internal"
             : "internal";
 
-          const tenantCtx = ctx as TenantContext;
-          const organizationId = tenantCtx.organization?.id;
+          const organization = getOrganizationFromContext(ctx);
+          const organizationId = organization?.id;
 
           if (!organizationId) {
             return ctx.json(
@@ -696,8 +651,8 @@ export const databasePlugin = (
               "internal"
             : "internal";
 
-          const tenantCtx = ctx as TenantContext;
-          const organizationId = tenantCtx.organization?.id;
+          const organization = getOrganizationFromContext(ctx);
+          const organizationId = organization?.id;
 
           if (!organizationId) {
             return ctx.json(
@@ -765,8 +720,8 @@ export const databasePlugin = (
             })
             .parse(ctx.body);
 
-          const tenantCtx = ctx as TenantContext;
-          const organizationId = tenantCtx.organization?.id;
+          const organization = getOrganizationFromContext(ctx);
+          const organizationId = organization?.id;
 
           if (!organizationId) {
             return ctx.json(
@@ -835,8 +790,8 @@ export const databasePlugin = (
           use: [sessionMiddleware],
         },
         async (ctx) => {
-          const tenantCtx = ctx as TenantContext;
-          const organizationId = tenantCtx.organization?.id;
+          const organization = getOrganizationFromContext(ctx);
+          const organizationId = organization?.id;
 
           if (!organizationId) {
             return ctx.json(
@@ -912,8 +867,8 @@ export const databasePlugin = (
             })
             .parse(ctx.body);
 
-          const tenantCtx = ctx as TenantContext;
-          const organizationId = tenantCtx.organization?.id;
+          const organization = getOrganizationFromContext(ctx);
+          const organizationId = organization?.id;
 
           if (!organizationId) {
             return ctx.json(
@@ -969,7 +924,7 @@ export const databasePluginDefinition = createPluginDefinition(databasePlugin, {
   name: "Database",
   description:
     "Provides hybrid database management with Better Auth integration. Supports both internal schema isolation and external database connections.",
-  category: "database",
+
   status: "active",
   clientPlugin: databaseClientPlugin,
 });

@@ -6,7 +6,9 @@ export * from "./database";
 export * from "./database/client";
 export * from "./gateway";
 export * from "./gateway/client";
+export * from "./permission";
 export * from "./registry";
+export * from "./registry/client";
 export * from "./storage";
 export * from "./storage/client";
 // --- Built-in Plugins ---

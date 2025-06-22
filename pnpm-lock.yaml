@@ -59,6 +59,9 @@ importers:
       "@unocss/nuxt":
         specifier: 66.2.3
         version: 66.2.3(magicast@0.3.5)(postcss@8.5.6)(vite@6.3.5(@types/node@24.0.3)(jiti@2.4.2)(terser@5.43.1)(yaml@2.8.0))(vue@3.5.17(typescript@5.8.3))(webpack@5.99.9)
+      "@unocss/reset":
+        specifier: 66.2.3
+        version: 66.2.3
       "@vue/test-utils":
         specifier: 2.4.6
         version: 2.4.6
@@ -93,7 +96,7 @@ importers:
         specifier: 4.3.5
         version: 4.3.5(vue@3.5.17(typescript@5.8.3))
       publint:
-        specifier: ^0.3.12
+        specifier: 0.3.12
         version: 0.3.12
       stripe:
         specifier: 18.2.1
@@ -123,7 +126,7 @@ importers:
         specifier: 4.3.16
         version: 4.3.16(react@19.1.0)(zod@3.25.67)
       better-auth:
-        specifier: ^1.2.9
+        specifier: 1.2.9
         version: 1.2.9
       h3:
         specifier: 1.15.3
@@ -133,74 +136,19 @@ importers:
         version: 0.28.2
       nitropack:
         specifier: 2.11.12
-        version: 2.11.12(@azure/app-configuration@1.8.0)(@azure/cosmos@4.2.0)(@azure/data-tables@13.3.0)(@azure/identity@4.6.0)(@azure/keyvault-secrets@4.9.0)(@azure/storage-blob@12.26.0)(@capacitor/preferences@7.0.0(@capacitor/core@7.4.0))(@deno/kv@0.9.0)(@netlify/blobs@8.1.0)(@planetscale/database@1.19.0)(@upstash/redis@1.34.3)(@vercel/blob@0.27.1)(@vercel/kv@1.0.1)(aws4fetch@1.0.20)(better-sqlite3@11.10.0)(drizzle-orm@0.33.0(@opentelemetry/api@1.9.0)(@planetscale/database@1.19.0)(@prisma/client@5.22.0(prisma@5.22.0))(@types/better-sqlite3@7.6.13)(@types/pg@8.15.4)(better-sqlite3@11.10.0)(kysely@0.28.2)(pg@8.16.2)(postgres@3.4.7)(prisma@5.22.0)(react@19.1.0))(idb-keyval@6.2.1)(rolldown@1.0.0-beta.15)(uploadthing@7.4.4(express@5.1.0)(h3@1.15.3))
+        version: 2.11.12(@azure/app-configuration@1.9.0)(@azure/cosmos@4.4.1)(@azure/data-tables@13.3.1)(@azure/identity@4.10.1)(@azure/keyvault-secrets@4.10.0)(@azure/storage-blob@12.27.0)(@capacitor/preferences@7.0.1(@capacitor/core@7.4.0))(@deno/kv@0.10.0)(@netlify/blobs@8.2.0)(@planetscale/database@1.19.0)(@upstash/redis@1.35.0)(@vercel/blob@1.1.1)(@vercel/kv@1.0.1)(aws4fetch@1.0.20)(better-sqlite3@11.10.0)(drizzle-orm@0.33.0(@opentelemetry/api@1.9.0)(@planetscale/database@1.19.0)(@prisma/client@5.22.0(prisma@5.22.0))(@types/better-sqlite3@7.6.13)(@types/pg@8.15.4)(better-sqlite3@11.10.0)(kysely@0.28.2)(pg@8.16.2)(postgres@3.4.7)(prisma@5.22.0)(react@19.1.0))(idb-keyval@6.2.2)(rolldown@1.0.0-beta.15)(uploadthing@7.7.2(express@5.1.0)(h3@1.15.3))
       pkg-types:
         specifier: 2.1.0
         version: 2.1.0
       unstorage:
         specifier: 1.16.0
-        version: 1.16.0(@azure/app-configuration@1.8.0)(@azure/cosmos@4.2.0)(@azure/data-tables@13.3.0)(@azure/identity@4.6.0)(@azure/keyvault-secrets@4.9.0)(@azure/storage-blob@12.26.0)(@capacitor/preferences@7.0.0(@capacitor/core@7.4.0))(@deno/kv@0.9.0)(@netlify/blobs@8.1.0)(@planetscale/database@1.19.0)(@upstash/redis@1.34.3)(@vercel/blob@0.27.1)(@vercel/kv@1.0.1)(aws4fetch@1.0.20)(db0@0.3.2(better-sqlite3@11.10.0)(drizzle-orm@0.33.0(@opentelemetry/api@1.9.0)(@planetscale/database@1.19.0)(@prisma/client@5.22.0(prisma@5.22.0))(@types/better-sqlite3@7.6.13)(@types/pg@8.15.4)(better-sqlite3@11.10.0)(kysely@0.28.2)(pg@8.16.2)(postgres@3.4.7)(prisma@5.22.0)(react@19.1.0)))(idb-keyval@6.2.1)(ioredis@5.4.2)(uploadthing@7.4.4(express@5.1.0)(h3@1.15.3))
+        version: 1.16.0(@azure/app-configuration@1.9.0)(@azure/cosmos@4.4.1)(@azure/data-tables@13.3.1)(@azure/identity@4.10.1)(@azure/keyvault-secrets@4.10.0)(@azure/storage-blob@12.27.0)(@capacitor/preferences@7.0.1(@capacitor/core@7.4.0))(@deno/kv@0.10.0)(@netlify/blobs@8.2.0)(@planetscale/database@1.19.0)(@upstash/redis@1.35.0)(@vercel/blob@1.1.1)(@vercel/kv@1.0.1)(aws4fetch@1.0.20)(db0@0.3.2(better-sqlite3@11.10.0)(drizzle-orm@0.33.0(@opentelemetry/api@1.9.0)(@planetscale/database@1.19.0)(@prisma/client@5.22.0(prisma@5.22.0))(@types/better-sqlite3@7.6.13)(@types/pg@8.15.4)(better-sqlite3@11.10.0)(kysely@0.28.2)(pg@8.16.2)(postgres@3.4.7)(prisma@5.22.0)(react@19.1.0)))(idb-keyval@6.2.2)(ioredis@5.6.1)(uploadthing@7.7.2(express@5.1.0)(h3@1.15.3))
       untyped:
         specifier: 2.0.0
         version: 2.0.0
       zod:
         specifier: 3.25.67
         version: 3.25.67
-    devDependencies:
-      "@azure/app-configuration":
-        specifier: 1.8.0
-        version: 1.8.0
-      "@azure/cosmos":
-        specifier: 4.2.0
-        version: 4.2.0
-      "@azure/data-tables":
-        specifier: 13.3.0
-        version: 13.3.0
-      "@azure/identity":
-        specifier: 4.6.0
-        version: 4.6.0
-      "@azure/keyvault-secrets":
-        specifier: 4.9.0
-        version: 4.9.0
-      "@azure/storage-blob":
-        specifier: 12.26.0
-        version: 12.26.0
-      "@capacitor/preferences":
-        specifier: 7.0.0
-        version: 7.0.0(@capacitor/core@7.4.0)
-      "@deno/kv":
-        specifier: 0.9.0
-        version: 0.9.0
-      "@netlify/blobs":
-        specifier: 8.1.0
-        version: 8.1.0
-      "@planetscale/database":
-        specifier: 1.19.0
-        version: 1.19.0
-      "@upstash/redis":
-        specifier: 1.34.3
-        version: 1.34.3
-      "@vercel/blob":
-        specifier: 0.27.1
-        version: 0.27.1
-      "@vercel/kv":
-        specifier: 1.0.1
-        version: 1.0.1
-      aws4fetch:
-        specifier: 1.0.20
-        version: 1.0.20
-      idb-keyval:
-        specifier: 6.2.1
-        version: 6.2.1
-      ioredis:
-        specifier: 5.4.2
-        version: 5.4.2
-      mongodb:
-        specifier: 6.17.0
-        version: 6.17.0
-      uploadthing:
-        specifier: 7.4.4
-        version: 7.4.4(express@5.1.0)(h3@1.15.3)
 
 packages:
   "@ai-sdk/openai-compatible@0.2.14":
@@ -283,13 +231,6 @@ packages:
       }
     engines: { node: ">=18.0.0" }
 
-  "@azure/app-configuration@1.8.0":
-    resolution:
-      {
-        integrity: sha512-RO4IGZMa3hI1yVhvb5rPr+r+UDxe4VDxbntFZIc5fsUPGqZbKzmGR2wABEtlrC2SU5YX6tL+NS3xWb4vf1M9lQ==,
-      }
-    engines: { node: ">=18.0.0" }
-
   "@azure/app-configuration@1.9.0":
     resolution:
       {
@@ -360,24 +301,10 @@ packages:
       }
     engines: { node: ">=18.0.0" }
 
-  "@azure/cosmos@4.2.0":
-    resolution:
-      {
-        integrity: sha512-acfAQTYLxgB/iZK7XvTVYe9NPk6DECEgcIXDQhyn7Uo4dGxeeW5D3YqLjLJrrzND5Iawer3eUQ5/iiLWvTGAxQ==,
-      }
-    engines: { node: ">=18.0.0" }
-
   "@azure/cosmos@4.4.1":
     resolution:
       {
         integrity: sha512-6JpqfYs1gSrqw1Ln4N3Y7UHKl0DxPTWQrd18Z5mYJYdgvPqxT2KqH5slYgb0sgVllT1LENddpQ8UGsTU9JwRQg==,
-      }
-    engines: { node: ">=18.0.0" }
-
-  "@azure/data-tables@13.3.0":
-    resolution:
-      {
-        integrity: sha512-g5dbhURt151j1sEbAaAkQ5eVXiZeyZxzrmIO2q9qpvzdOiijRt+jmo8Nmy0QaMb1uGgPeEHtBaKjgS6lxN3/NA==,
       }
     engines: { node: ">=18.0.0" }
 
@@ -392,13 +319,6 @@ packages:
     resolution:
       {
         integrity: sha512-YM/z6RxRtFlXUH2egAYF/FDPes+MUE6ZoknjEdaq7ebJMMNUzn9zCJ3bd2ZZZlkP0r1xKa88kolhFH/FGV7JnA==,
-      }
-    engines: { node: ">=18.0.0" }
-
-  "@azure/identity@4.6.0":
-    resolution:
-      {
-        integrity: sha512-ANpO1iAvcZmpD4QY7/kaE/P2n66pRXsDp3nMUC6Ow3c9KfXOZF7qMU9VgqPw8m7adP7TVIbVyrCEmD9cth3KQQ==,
       }
     engines: { node: ">=18.0.0" }
 
@@ -423,13 +343,6 @@ packages:
       }
     engines: { node: ">=18.0.0" }
 
-  "@azure/keyvault-secrets@4.9.0":
-    resolution:
-      {
-        integrity: sha512-XkLsuzxFdhVIOVcELhso8OhQgY2lSWZcZn6fqjE848FwP9lJemJhu7nxYy8Q1nns6XqPB0WsTPmEkR8eu852vA==,
-      }
-    engines: { node: ">=18.0.0" }
-
   "@azure/logger@1.2.0":
     resolution:
       {
@@ -444,13 +357,6 @@ packages:
       }
     engines: { node: ">=0.8.0" }
 
-  "@azure/msal-common@14.16.0":
-    resolution:
-      {
-        integrity: sha512-1KOZj9IpcDSwpNiQNjt0jDYZpQvNZay7QAEi/5DLubay40iGYtLzya/jbjRPLyOTZhEKyL1MzPuw2HqBCjceYA==,
-      }
-    engines: { node: ">=0.8.0" }
-
   "@azure/msal-common@15.7.1":
     resolution:
       {
@@ -458,26 +364,12 @@ packages:
       }
     engines: { node: ">=0.8.0" }
 
-  "@azure/msal-node@2.16.2":
-    resolution:
-      {
-        integrity: sha512-An7l1hEr0w1HMMh1LU+rtDtqL7/jw74ORlc9Wnh06v7TU/xpG39/Zdr1ZJu3QpjUfKJ+E0/OXMW8DRSWTlh7qQ==,
-      }
-    engines: { node: ">=16" }
-
   "@azure/msal-node@3.6.1":
     resolution:
       {
         integrity: sha512-ctcVz4xS+st5KxOlQqgpvA+uDFAa59CvkmumnuhlD2XmNczloKBdCiMQG7/TigSlaeHe01qoOlDjz3TyUAmKUg==,
       }
     engines: { node: ">=16" }
-
-  "@azure/storage-blob@12.26.0":
-    resolution:
-      {
-        integrity: sha512-SriLPKezypIsiZ+TtlFfE46uuBIap2HeaQVS78e1P7rz5OSbq0rsd52WE1mC5f7vAeLiXqv7I7oRhL3WFZEw3Q==,
-      }
-    engines: { node: ">=18.0.0" }
 
   "@azure/storage-blob@12.27.0":
     resolution:
@@ -854,14 +746,6 @@ packages:
         integrity: sha512-P6NnjoHyobZgTjynlZSn27d0SUj6j38inlNxFnKZr9qwU7/r6+0Sg2nWkGkIH/pMmXHsvGD8zVe6KUq1UncIjA==,
       }
 
-  "@capacitor/preferences@7.0.0":
-    resolution:
-      {
-        integrity: sha512-crlTtTIWcdlLfQULJ9ZiCPpvpm51WoZ8CIVG3+XSJGyavjD4bscHP15U24ya5SjpYmI44bGY9lvhvcSCfB5+AA==,
-      }
-    peerDependencies:
-      "@capacitor/core": ">=7.0.0"
-
   "@capacitor/preferences@7.0.1":
     resolution:
       {
@@ -935,28 +819,10 @@ packages:
     cpu: [arm64]
     os: [darwin]
 
-  "@deno/kv-darwin-arm64@0.9.0":
-    resolution:
-      {
-        integrity: sha512-9o2typxowaiIW7TJFzbuDEIpmZA9/At+kO7ljgb+jEm16gBHtCkDt69TU4h0ZIMmHo7E9Mo+W84BeGdXkxUGcg==,
-      }
-    engines: { node: ">= 18" }
-    cpu: [arm64]
-    os: [darwin]
-
   "@deno/kv-darwin-x64@0.10.0":
     resolution:
       {
         integrity: sha512-olIc2rVGat+CdVc4sAoCnaCht3072+Y87rNA3RVDlHSdCf/lCA/72rKHkhLnr2N0NDaZuObgez0q5dlnG81Hvg==,
-      }
-    engines: { node: ">= 18" }
-    cpu: [x64]
-    os: [darwin]
-
-  "@deno/kv-darwin-x64@0.9.0":
-    resolution:
-      {
-        integrity: sha512-LxCNbOO3INW5VkhLviRLvQoiJtiNlgSvPZM5JwVQhu4dWNpuMI7Hl2cU1PB3mOwuYHdORnkj5BqChQRdRh4F0g==,
       }
     engines: { node: ">= 18" }
     cpu: [x64]
@@ -971,28 +837,10 @@ packages:
     cpu: [x64]
     os: [linux]
 
-  "@deno/kv-linux-x64-gnu@0.9.0":
-    resolution:
-      {
-        integrity: sha512-DqhJdWD/mzb/WHHaL9QqsPZxuk/w1haWDnEOZ3rda704q/lJFkIBMBWBB8kDDbVphQ2WNVU0uKyAdxNYpUK8YQ==,
-      }
-    engines: { node: ">= 18" }
-    cpu: [x64]
-    os: [linux]
-
   "@deno/kv-win32-x64-msvc@0.10.0":
     resolution:
       {
         integrity: sha512-7l9rlxS7KERpnRSXGoot+zXBeaDt4Dt+LShTva+XwuYqQstnxTuo0xLNzt36+nYHtMeVGCxZUzwQFCNp8686Sw==,
-      }
-    engines: { node: ">= 18" }
-    cpu: [x64]
-    os: [win32]
-
-  "@deno/kv-win32-x64-msvc@0.9.0":
-    resolution:
-      {
-        integrity: sha512-yDLd0OY/7nOoUG8WypEOLIME0ZADqgG7ciKiL7hOy06ra1gR9AaZeacsZ2Df2SxSnuuOVJpxUhml+JRVx+LGpg==,
       }
     engines: { node: ">= 18" }
     cpu: [x64]
@@ -1004,26 +852,12 @@ packages:
         integrity: sha512-fbQFYsWvTbyjj6QhXOXFzb3AaMuStOTgUQvgoHf0bJ2s8csklV4V5NkGvi/aNH3uqmduYw+LULz9pPerpiwNfA==,
       }
 
-  "@deno/kv@0.9.0":
-    resolution:
-      {
-        integrity: sha512-NdnyNKpxH+Hjb/55v+qpLG39Tz/otlyl0FFaNCRcOtQfCmjRsJevoZugBR+d+O+/5PYmmj/fgfcpYgnukM1r5A==,
-      }
-
   "@dependents/detective-less@5.0.1":
     resolution:
       {
         integrity: sha512-Y6+WUMsTFWE5jb20IFP4YGa5IrGY/+a/FbOSjDF/wz9gepU2hwCYSXRHP/vPwBvwcY3SVMASt4yXxbXNXigmZQ==,
       }
     engines: { node: ">=18" }
-
-  "@effect/platform@0.70.7":
-    resolution:
-      {
-        integrity: sha512-TbNwj/mOJhycPygbmicGBS7CNtv5Z8WVheRbLUdP3oPAe/nbSOJVLc8ZPvOejhquF/1vJMKuqY5MWfkcBpvi/g==,
-      }
-    peerDependencies:
-      effect: ^3.11.5
 
   "@effect/platform@0.81.0":
     resolution:
@@ -1656,12 +1490,6 @@ packages:
       }
     engines: { node: ">=18" }
 
-  "@mongodb-js/saslprep@1.3.0":
-    resolution:
-      {
-        integrity: sha512-zlayKCsIjYb7/IdfqxorK5+xUMyi4vOKcFy10wKJYc63NSdKI8mNME+uJqfatkPmOSMMUiojrL58IePKBm3gvQ==,
-      }
-
   "@mrleebo/prisma-ast@0.12.1":
     resolution:
       {
@@ -1728,13 +1556,6 @@ packages:
       {
         integrity: sha512-4wMPu9iN3/HL97QblBsBay3E1etIciR84izI3U+4iALY+JHCrI+a2jO0qbAZ/nxKoegypYEaiiqWXylm+/zfrw==,
       }
-
-  "@netlify/blobs@8.1.0":
-    resolution:
-      {
-        integrity: sha512-9hIbusvAZjSGBJ42OyFC2AxsEph1LuKQahMWFcPGEIsOqIYHhMRkYA7wSUMhH7naydjNmllpcp3pJLOK4RhFaQ==,
-      }
-    engines: { node: ^14.16.0 || >=16.0.0 }
 
   "@netlify/blobs@8.2.0":
     resolution:
@@ -3002,12 +2823,6 @@ packages:
         integrity: sha512-m2bOd0f2RT9k8QJx1JN85cZYyH1RqFBdlwtkSlf4tBDYLCiiZnv1fIIwacK6cqwXavOydf0NPToMQgpKq+dVlA==,
       }
 
-  "@standard-schema/spec@1.0.0-beta.3":
-    resolution:
-      {
-        integrity: sha512-0ifF3BjA1E8SY9C+nUew8RefNOIq0cDlYALPty4rhUm8Rrl6tCM8hBT4bhGhx7I7iXD0uAgt50lgo8dD73ACMw==,
-      }
-
   "@standard-schema/spec@1.0.0-beta.4":
     resolution:
       {
@@ -3130,22 +2945,10 @@ packages:
         integrity: sha512-6WaYesThRMCl19iryMYP7/x2OVgCtbIVflDGFpWnb9irXI3UjYE4AzmYuiUKY1AJstGijoY+MgUszMgRxIYTYw==,
       }
 
-  "@types/webidl-conversions@7.0.3":
-    resolution:
-      {
-        integrity: sha512-CiJJvcRtIgzadHCYXw7dqEnMNRjhGZlYK05Mj9OyktqV8uVT8fD2BFOB7S1uwBE3Kj2Z+4UyPmFw/Ixgw/LAlA==,
-      }
-
   "@types/whatwg-mimetype@3.0.2":
     resolution:
       {
         integrity: sha512-c2AKvDT8ToxLIOUlN51gTiHXflsfIFisS4pO7pDPoKouJCESkhZnEy623gwP9laCy5lnLDAw1vAzu2vM2YLOrA==,
-      }
-
-  "@types/whatwg-url@11.0.5":
-    resolution:
-      {
-        integrity: sha512-coYR071JRaHa+xoEvvYqvnIHaVqaYrLPbsufM9BF63HkwI5Lgmy2QR8Q5K/lYDYo5AK82wOvSOS0UsLTpTG7uQ==,
       }
 
   "@types/yauzl@2.10.3":
@@ -3389,22 +3192,10 @@ packages:
     peerDependencies:
       webpack: ^4 || ^5
 
-  "@uploadthing/mime-types@0.3.4":
-    resolution:
-      {
-        integrity: sha512-EB0o0a4y++UJFMLqS8LDVhSQgXUllG6t5fwl5cbmOM0Uay8YY5Nc/JjFwzJ8wccdIKz4oYwQW7EOSfUyaMPbfw==,
-      }
-
   "@uploadthing/mime-types@0.3.5":
     resolution:
       {
         integrity: sha512-iYOmod80XXOSe4NVvaUG9FsS91YGPUaJMTBj52Nwu0G2aTzEN6Xcl0mG1rWqXJ4NUH8MzjVqg+tQND5TPkJWhg==,
-      }
-
-  "@uploadthing/shared@7.1.5":
-    resolution:
-      {
-        integrity: sha512-5ePSiR2CPA5a8gfPqsHpE/uPwGG9iPqhxcFpeLGnEuExPqIi5ZY7upZgpc+6T1gMxwfbP0O5X4043TTNk3q/pA==,
       }
 
   "@uploadthing/shared@7.1.8":
@@ -3419,24 +3210,11 @@ packages:
         integrity: sha512-ACj0GhJ4qrQyBshwFgPod6XufVEfKX2wcaihsEvSdLYnY+m+pa13kGt1RXm/yTHKf4TQi/Dy2A8z/y6WUEOmlg==,
       }
 
-  "@upstash/redis@1.34.3":
-    resolution:
-      {
-        integrity: sha512-VT25TyODGy/8ljl7GADnJoMmtmJ1F8d84UXfGonRRF8fWYJz7+2J6GzW+a6ETGtk4OyuRTt7FRSvFG5GvrfSdQ==,
-      }
-
   "@upstash/redis@1.35.0":
     resolution:
       {
         integrity: sha512-WUm0Jz1xN4DBDGeJIi2Y0kVsolWRB2tsVds4SExaiLg4wBdHFMB+8IfZtBWr+BP0FvhuBr5G1/VLrJ9xzIWHsg==,
       }
-
-  "@vercel/blob@0.27.1":
-    resolution:
-      {
-        integrity: sha512-X5EG9W1cZW+Nbt/XdrJJSl5DzCXXn1JRP5nfFwkpFD03nB6uh6BldwX4syElHcciM4Pih8CS7Ri1mtLCJvxSHA==,
-      }
-    engines: { node: ">=16.14" }
 
   "@vercel/blob@1.1.1":
     resolution:
@@ -4152,13 +3930,6 @@ packages:
       }
     engines: { node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7 }
     hasBin: true
-
-  bson@6.10.4:
-    resolution:
-      {
-        integrity: sha512-WIsKqkSC0ABoBJuT1LEX+2HEvNmNKKgnTAyd0fL8qzK4SH2i9NXg+t08YtdZp/V9IZ33cxe3iV4yM0qg8lMQng==,
-      }
-    engines: { node: ">=16.20.1" }
 
   buffer-crc32@0.2.13:
     resolution:
@@ -5190,12 +4961,6 @@ packages:
         integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==,
       }
 
-  effect@3.11.5:
-    resolution:
-      {
-        integrity: sha512-oSzaR/S/2A/qDTnDqMWxQUNSjCG2sRLB4NEvTu+l9RqE122MTgKXOWzw0x4MHsdovRTzAihfkpgBj2aLFnH2+w==,
-      }
-
   effect@3.14.21:
     resolution:
       {
@@ -6091,12 +5856,6 @@ packages:
       }
     engines: { node: ">=0.10.0" }
 
-  idb-keyval@6.2.1:
-    resolution:
-      {
-        integrity: sha512-8Sb3veuYCyrZL+VBt9LJfZjLUPWVvqn8tG28VqYNFCo43KHcKuq+b4EiXGeuaLAQWL2YmyDgMp2aSpH9JHsEQg==,
-      }
-
   idb-keyval@6.2.2:
     resolution:
       {
@@ -6181,13 +5940,6 @@ packages:
         integrity: sha512-AMB1mvwR1pyBFY/nSevUX6y8nJWS63/SzUKD3JyQn97s4xgIdgQPT75IRouIiBAN4yLQBUShNYVW0+UG25daCw==,
       }
     engines: { node: ^14.17.0 || ^16.13.0 || >=18.0.0 }
-
-  ioredis@5.4.2:
-    resolution:
-      {
-        integrity: sha512-0SZXGNGZ+WzISQ67QDyZ2x0+wVxjjUndtD8oSeik/4ajifeiRufed8fCb8QW8VMyi4MXcS+UO1k/0NGhvq1PAg==,
-      }
-    engines: { node: ">=12.22.0" }
 
   ioredis@5.6.1:
     resolution:
@@ -6494,12 +6246,6 @@ packages:
       }
     hasBin: true
 
-  jsbi@4.3.2:
-    resolution:
-      {
-        integrity: sha512-9fqMSQbhJykSeii05nxKl4m6Eqn2P6rOlYiS+C5Dr/HPIU/7yZxu5qzbs40tgaFORiw2Amd0mirjxatXYMkIew==,
-      }
-
   jsesc@3.1.0:
     resolution:
       {
@@ -6599,22 +6345,10 @@ packages:
         integrity: sha512-eeH5JO+21J78qMvTIDdBXidBd6nG2kZjg5Ohz/1fpa28Z4CcsWUzJ1ZZyFq/3z3N17aZy+ZuBoHljASbL1WfOw==,
       }
 
-  jwa@2.0.1:
-    resolution:
-      {
-        integrity: sha512-hRF04fqJIP8Abbkq5NKGN0Bbr3JxlQ+qhZufXVr0DvujKy93ZCbXZMHDL4EOtodSbCWxOqR8MS1tXA5hwqCXDg==,
-      }
-
   jws@3.2.2:
     resolution:
       {
         integrity: sha512-YHlZCB6lMTllWDtSPHz/ZXTsi8S00usEV6v1tjq8tOUZzw7DpSDWVXjXDre6ed1w/pd495ODpHZYSdkRTsa0HA==,
-      }
-
-  jws@4.0.0:
-    resolution:
-      {
-        integrity: sha512-KDncfTmOZoOMTFG4mBlG0qUIOlc03fmzH+ru6RgYVZhPkyiy/92Owlt/8UEN+a4TXR1FQetfIpJE8ApdvdVxTg==,
       }
 
   jwt-decode@4.0.0:
@@ -6932,12 +6666,6 @@ packages:
       }
     engines: { node: ">= 0.8" }
 
-  memory-pager@1.5.0:
-    resolution:
-      {
-        integrity: sha512-ZS4Bp4r/Zoeq6+NLJpP+0Zzm0pR8whtGPf1XExKLJBAczGMnSi3It14OiNCStjQjM6NU1okjQGSxgEZN8eBYKg==,
-      }
-
   merge-descriptors@2.0.0:
     resolution:
       {
@@ -7164,42 +6892,6 @@ packages:
       }
     engines: { node: ">=18" }
     hasBin: true
-
-  mongodb-connection-string-url@3.0.2:
-    resolution:
-      {
-        integrity: sha512-rMO7CGo/9BFwyZABcKAWL8UJwH/Kc2x0g72uhDWzG48URRax5TCIcJ7Rc3RZqffZzO/Gwff/jyKwCU9TN8gehA==,
-      }
-
-  mongodb@6.17.0:
-    resolution:
-      {
-        integrity: sha512-neerUzg/8U26cgruLysKEjJvoNSXhyID3RvzvdcpsIi2COYM3FS3o9nlH7fxFtefTb942dX3W9i37oPfCVj4wA==,
-      }
-    engines: { node: ">=16.20.1" }
-    peerDependencies:
-      "@aws-sdk/credential-providers": ^3.188.0
-      "@mongodb-js/zstd": ^1.1.0 || ^2.0.0
-      gcp-metadata: ^5.2.0
-      kerberos: ^2.0.1
-      mongodb-client-encryption: ">=6.0.0 <7"
-      snappy: ^7.2.2
-      socks: ^2.7.1
-    peerDependenciesMeta:
-      "@aws-sdk/credential-providers":
-        optional: true
-      "@mongodb-js/zstd":
-        optional: true
-      gcp-metadata:
-        optional: true
-      kerberos:
-        optional: true
-      mongodb-client-encryption:
-        optional: true
-      snappy:
-        optional: true
-      socks:
-        optional: true
 
   mri@1.2.0:
     resolution:
@@ -8947,12 +8639,6 @@ packages:
       }
     engines: { node: ">= 8" }
 
-  sparse-bitfield@3.0.3:
-    resolution:
-      {
-        integrity: sha512-kvzhi7vqKTfkh0PZU+2D2PIllw2ymqJKujUcyPMd9Y75Nv4nPbGJZXNhxsgdQab2BmlDct1YnfQCguEvHr7VsQ==,
-      }
-
   spdx-correct@3.2.0:
     resolution:
       {
@@ -9034,13 +8720,6 @@ packages:
       {
         integrity: sha512-UGvjygr6F6tpH7o2qyqR6QYpwraIjKSdtzyBdyytFOHmPZY917kwdwLG0RbOjWOnKmnm3PeHjaoLLMie7kPLQw==,
       }
-
-  stoppable@1.1.0:
-    resolution:
-      {
-        integrity: sha512-KXDYZ9dszj6bzvnEMRYvxgeTHU74QBFL54XKtP3nyMuJ81CFYtABZ3bAzL2EdFUaEwJOBOgENyFj3R7oTzDyyw==,
-      }
-    engines: { node: ">=4", npm: ">=6" }
 
   streamx@2.22.1:
     resolution:
@@ -9397,13 +9076,6 @@ packages:
         integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==,
       }
 
-  tr46@5.1.1:
-    resolution:
-      {
-        integrity: sha512-hdF5ZgjTqgAntKkklYw0R03MG2x/bSzTtkxmIRw/sTNV8YXsCJ1tfLAX23lhxhHJlEf3CRCOCGGWw3vI3GaSPw==,
-      }
-    engines: { node: ">=18" }
-
   triple-beam@1.4.1:
     resolution:
       {
@@ -9749,30 +9421,6 @@ packages:
     peerDependencies:
       browserslist: ">= 4.21.0"
 
-  uploadthing@7.4.4:
-    resolution:
-      {
-        integrity: sha512-dgV8LqaKrXSnpDkqzzLbVEmIubMPi8a5bRtIzM+rG5EbZpIZyOG0bByLxdSlkSbK5L6F+HbIGX5eDkLPFNL8dg==,
-      }
-    engines: { node: ">=18.13.0" }
-    peerDependencies:
-      express: "*"
-      fastify: "*"
-      h3: "*"
-      next: "*"
-      tailwindcss: ^3.0.0 || ^4.0.0-beta.0
-    peerDependenciesMeta:
-      express:
-        optional: true
-      fastify:
-        optional: true
-      h3:
-        optional: true
-      next:
-        optional: true
-      tailwindcss:
-        optional: true
-
   uploadthing@7.7.2:
     resolution:
       {
@@ -10113,13 +9761,6 @@ packages:
         integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==,
       }
 
-  webidl-conversions@7.0.0:
-    resolution:
-      {
-        integrity: sha512-VwddBukDzu71offAQR975unBIGqfKZpM+8ZX6ySk8nYhVoo5CYaZyzt3YBvYtRtO+aoGlqxPg/B87NGVZ/fu6g==,
-      }
-    engines: { node: ">=12" }
-
   webpack-sources@3.3.2:
     resolution:
       {
@@ -10152,13 +9793,6 @@ packages:
         integrity: sha512-nt+N2dzIutVRxARx1nghPKGv1xHikU7HKdfafKkLNLindmPU/ch3U31NOCGGA/dmPcmb1VlofO0vnKAcsm0o/Q==,
       }
     engines: { node: ">=12" }
-
-  whatwg-url@14.2.0:
-    resolution:
-      {
-        integrity: sha512-De72GdQZzNTUBBChsXueQUnPKDkg/5A5zp7pFDuQAj5UFoENpiACU0wlCvzpAGnTkj++ihpKwKyYewn/XNUbKw==,
-      }
-    engines: { node: ">=18" }
 
   whatwg-url@5.0.0:
     resolution:
@@ -10446,22 +10080,7 @@ snapshots:
   "@azure/abort-controller@2.1.2":
     dependencies:
       tslib: 2.8.1
-
-  "@azure/app-configuration@1.8.0":
-    dependencies:
-      "@azure/abort-controller": 2.1.2
-      "@azure/core-auth": 1.9.0
-      "@azure/core-client": 1.9.4
-      "@azure/core-http-compat": 2.3.0
-      "@azure/core-lro": 2.7.2
-      "@azure/core-paging": 1.6.2
-      "@azure/core-rest-pipeline": 1.21.0
-      "@azure/core-tracing": 1.2.0
-      "@azure/core-util": 1.12.0
-      "@azure/logger": 1.2.0
-      tslib: 2.8.1
-    transitivePeerDependencies:
-      - supports-color
+    optional: true
 
   "@azure/app-configuration@1.9.0":
     dependencies:
@@ -10487,6 +10106,7 @@ snapshots:
       tslib: 2.8.1
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   "@azure/core-client@1.9.4":
     dependencies:
@@ -10499,6 +10119,7 @@ snapshots:
       tslib: 2.8.1
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   "@azure/core-http-compat@2.3.0":
     dependencies:
@@ -10507,6 +10128,7 @@ snapshots:
       "@azure/core-rest-pipeline": 1.21.0
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   "@azure/core-lro@2.7.2":
     dependencies:
@@ -10516,10 +10138,12 @@ snapshots:
       tslib: 2.8.1
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   "@azure/core-paging@1.6.2":
     dependencies:
       tslib: 2.8.1
+    optional: true
 
   "@azure/core-rest-pipeline@1.21.0":
     dependencies:
@@ -10532,10 +10156,12 @@ snapshots:
       tslib: 2.8.1
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   "@azure/core-tracing@1.2.0":
     dependencies:
       tslib: 2.8.1
+    optional: true
 
   "@azure/core-util@1.12.0":
     dependencies:
@@ -10544,26 +10170,13 @@ snapshots:
       tslib: 2.8.1
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   "@azure/core-xml@1.4.5":
     dependencies:
       fast-xml-parser: 5.2.5
       tslib: 2.8.1
-
-  "@azure/cosmos@4.2.0":
-    dependencies:
-      "@azure/abort-controller": 2.1.2
-      "@azure/core-auth": 1.9.0
-      "@azure/core-rest-pipeline": 1.21.0
-      "@azure/core-tracing": 1.2.0
-      "@azure/core-util": 1.12.0
-      fast-json-stable-stringify: 2.1.0
-      jsbi: 4.3.2
-      priorityqueuejs: 2.0.0
-      semaphore: 1.1.0
-      tslib: 2.8.1
-    transitivePeerDependencies:
-      - supports-color
+    optional: true
 
   "@azure/cosmos@4.4.1":
     dependencies:
@@ -10580,20 +10193,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
     optional: true
-
-  "@azure/data-tables@13.3.0":
-    dependencies:
-      "@azure/core-auth": 1.9.0
-      "@azure/core-client": 1.9.4
-      "@azure/core-paging": 1.6.2
-      "@azure/core-rest-pipeline": 1.21.0
-      "@azure/core-tracing": 1.2.0
-      "@azure/core-util": 1.12.0
-      "@azure/core-xml": 1.4.5
-      "@azure/logger": 1.2.0
-      tslib: 2.8.1
-    transitivePeerDependencies:
-      - supports-color
 
   "@azure/data-tables@13.3.1":
     dependencies:
@@ -10627,25 +10226,6 @@ snapshots:
       - supports-color
     optional: true
 
-  "@azure/identity@4.6.0":
-    dependencies:
-      "@azure/abort-controller": 2.1.2
-      "@azure/core-auth": 1.9.0
-      "@azure/core-client": 1.9.4
-      "@azure/core-rest-pipeline": 1.21.0
-      "@azure/core-tracing": 1.2.0
-      "@azure/core-util": 1.12.0
-      "@azure/logger": 1.2.0
-      "@azure/msal-browser": 4.13.2
-      "@azure/msal-node": 2.16.2
-      events: 3.3.0
-      jws: 4.0.0
-      open: 8.4.2
-      stoppable: 1.1.0
-      tslib: 2.8.1
-    transitivePeerDependencies:
-      - supports-color
-
   "@azure/keyvault-common@2.0.0":
     dependencies:
       "@azure/abort-controller": 2.1.2
@@ -10658,6 +10238,7 @@ snapshots:
       tslib: 2.8.1
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   "@azure/keyvault-keys@4.10.0":
     dependencies:
@@ -10695,43 +10276,21 @@ snapshots:
       - supports-color
     optional: true
 
-  "@azure/keyvault-secrets@4.9.0":
-    dependencies:
-      "@azure/abort-controller": 2.1.2
-      "@azure/core-auth": 1.9.0
-      "@azure/core-client": 1.9.4
-      "@azure/core-http-compat": 2.3.0
-      "@azure/core-lro": 2.7.2
-      "@azure/core-paging": 1.6.2
-      "@azure/core-rest-pipeline": 1.21.0
-      "@azure/core-tracing": 1.2.0
-      "@azure/core-util": 1.12.0
-      "@azure/keyvault-common": 2.0.0
-      "@azure/logger": 1.2.0
-      tslib: 2.8.1
-    transitivePeerDependencies:
-      - supports-color
-
   "@azure/logger@1.2.0":
     dependencies:
       "@typespec/ts-http-runtime": 0.2.3
       tslib: 2.8.1
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   "@azure/msal-browser@4.13.2":
     dependencies:
       "@azure/msal-common": 15.7.1
+    optional: true
 
-  "@azure/msal-common@14.16.0": {}
-
-  "@azure/msal-common@15.7.1": {}
-
-  "@azure/msal-node@2.16.2":
-    dependencies:
-      "@azure/msal-common": 14.16.0
-      jsonwebtoken: 9.0.2
-      uuid: 8.3.2
+  "@azure/msal-common@15.7.1":
+    optional: true
 
   "@azure/msal-node@3.6.1":
     dependencies:
@@ -10739,24 +10298,6 @@ snapshots:
       jsonwebtoken: 9.0.2
       uuid: 8.3.2
     optional: true
-
-  "@azure/storage-blob@12.26.0":
-    dependencies:
-      "@azure/abort-controller": 2.1.2
-      "@azure/core-auth": 1.9.0
-      "@azure/core-client": 1.9.4
-      "@azure/core-http-compat": 2.3.0
-      "@azure/core-lro": 2.7.2
-      "@azure/core-paging": 1.6.2
-      "@azure/core-rest-pipeline": 1.21.0
-      "@azure/core-tracing": 1.2.0
-      "@azure/core-util": 1.12.0
-      "@azure/core-xml": 1.4.5
-      "@azure/logger": 1.2.0
-      events: 3.3.0
-      tslib: 2.8.1
-    transitivePeerDependencies:
-      - supports-color
 
   "@azure/storage-blob@12.27.0":
     dependencies:
@@ -11111,10 +10652,7 @@ snapshots:
   "@capacitor/core@7.4.0":
     dependencies:
       tslib: 2.8.1
-
-  "@capacitor/preferences@7.0.0(@capacitor/core@7.4.0)":
-    dependencies:
-      "@capacitor/core": 7.4.0
+    optional: true
 
   "@capacitor/preferences@7.0.1(@capacitor/core@7.4.0)":
     dependencies:
@@ -11162,25 +10700,13 @@ snapshots:
   "@deno/kv-darwin-arm64@0.10.0":
     optional: true
 
-  "@deno/kv-darwin-arm64@0.9.0":
-    optional: true
-
   "@deno/kv-darwin-x64@0.10.0":
-    optional: true
-
-  "@deno/kv-darwin-x64@0.9.0":
     optional: true
 
   "@deno/kv-linux-x64-gnu@0.10.0":
     optional: true
 
-  "@deno/kv-linux-x64-gnu@0.9.0":
-    optional: true
-
   "@deno/kv-win32-x64-msvc@0.10.0":
-    optional: true
-
-  "@deno/kv-win32-x64-msvc@0.9.0":
     optional: true
 
   "@deno/kv@0.10.0":
@@ -11191,23 +10717,10 @@ snapshots:
       "@deno/kv-win32-x64-msvc": 0.10.0
     optional: true
 
-  "@deno/kv@0.9.0":
-    optionalDependencies:
-      "@deno/kv-darwin-arm64": 0.9.0
-      "@deno/kv-darwin-x64": 0.9.0
-      "@deno/kv-linux-x64-gnu": 0.9.0
-      "@deno/kv-win32-x64-msvc": 0.9.0
-
   "@dependents/detective-less@5.0.1":
     dependencies:
       gonzales-pe: 4.3.0
       node-source-walk: 7.0.1
-
-  "@effect/platform@0.70.7(effect@3.11.5)":
-    dependencies:
-      effect: 3.11.5
-      find-my-way-ts: 0.1.5
-      multipasta: 0.2.5
 
   "@effect/platform@0.81.0(effect@3.14.21)":
     dependencies:
@@ -11356,7 +10869,8 @@ snapshots:
       "@eslint/core": 0.15.0
       levn: 0.4.1
 
-  "@fastify/busboy@2.1.1": {}
+  "@fastify/busboy@2.1.1":
+    optional: true
 
   "@fastify/busboy@3.1.1": {}
 
@@ -11586,10 +11100,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  "@mongodb-js/saslprep@1.3.0":
-    dependencies:
-      sparse-bitfield: 3.0.3
-
   "@mrleebo/prisma-ast@0.12.1":
     dependencies:
       chevrotain: 10.5.0
@@ -11621,8 +11131,6 @@ snapshots:
     optional: true
 
   "@netlify/binary-info@1.0.0": {}
-
-  "@netlify/blobs@8.1.0": {}
 
   "@netlify/blobs@8.2.0":
     optional: true
@@ -12223,7 +11731,8 @@ snapshots:
   "@pkgjs/parseargs@0.11.0":
     optional: true
 
-  "@planetscale/database@1.19.0": {}
+  "@planetscale/database@1.19.0":
+    optional: true
 
   "@polka/url@1.0.0-next.29": {}
 
@@ -12528,8 +12037,6 @@ snapshots:
   "@standard-schema/spec@1.0.0":
     optional: true
 
-  "@standard-schema/spec@1.0.0-beta.3": {}
-
   "@standard-schema/spec@1.0.0-beta.4":
     optional: true
 
@@ -12599,13 +12106,7 @@ snapshots:
 
   "@types/triple-beam@1.3.5": {}
 
-  "@types/webidl-conversions@7.0.3": {}
-
   "@types/whatwg-mimetype@3.0.2": {}
-
-  "@types/whatwg-url@11.0.5":
-    dependencies:
-      "@types/webidl-conversions": 7.0.3
 
   "@types/yauzl@2.10.3":
     dependencies:
@@ -12660,6 +12161,7 @@ snapshots:
       tslib: 2.8.1
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   "@unhead/vue@2.0.10(vue@3.5.17(typescript@5.8.3))":
     dependencies:
@@ -12857,16 +12359,8 @@ snapshots:
       webpack: 5.99.9
       webpack-sources: 3.3.2
 
-  "@uploadthing/mime-types@0.3.4": {}
-
   "@uploadthing/mime-types@0.3.5":
     optional: true
-
-  "@uploadthing/shared@7.1.5":
-    dependencies:
-      "@uploadthing/mime-types": 0.3.4
-      effect: 3.11.5
-      sqids: 0.3.0
 
   "@uploadthing/shared@7.1.8":
     dependencies:
@@ -12878,23 +12372,12 @@ snapshots:
   "@upstash/redis@1.25.1":
     dependencies:
       crypto-js: 4.2.0
-
-  "@upstash/redis@1.34.3":
-    dependencies:
-      crypto-js: 4.2.0
+    optional: true
 
   "@upstash/redis@1.35.0":
     dependencies:
       uncrypto: 0.1.3
     optional: true
-
-  "@vercel/blob@0.27.1":
-    dependencies:
-      async-retry: 1.3.3
-      is-buffer: 2.0.5
-      is-node-process: 1.2.0
-      throttleit: 2.1.0
-      undici: 5.29.0
 
   "@vercel/blob@1.1.1":
     dependencies:
@@ -12908,6 +12391,7 @@ snapshots:
   "@vercel/kv@1.0.1":
     dependencies:
       "@upstash/redis": 1.25.1
+    optional: true
 
   "@vercel/nft@0.29.4(rollup@4.44.0)":
     dependencies:
@@ -13355,6 +12839,7 @@ snapshots:
   async-retry@1.3.3:
     dependencies:
       retry: 0.13.1
+    optional: true
 
   async-sema@3.1.1: {}
 
@@ -13370,7 +12855,8 @@ snapshots:
       postcss: 8.5.6
       postcss-value-parser: 4.2.0
 
-  aws4fetch@1.0.20: {}
+  aws4fetch@1.0.20:
+    optional: true
 
   b4a@1.6.7: {}
 
@@ -13458,13 +12944,12 @@ snapshots:
       node-releases: 2.0.19
       update-browserslist-db: 1.1.3(browserslist@4.25.0)
 
-  bson@6.10.4: {}
-
   buffer-crc32@0.2.13: {}
 
   buffer-crc32@1.0.0: {}
 
-  buffer-equal-constant-time@1.0.1: {}
+  buffer-equal-constant-time@1.0.1:
+    optional: true
 
   buffer-from@1.1.2: {}
 
@@ -13753,7 +13238,8 @@ snapshots:
     dependencies:
       uncrypto: 0.1.3
 
-  crypto-js@4.2.0: {}
+  crypto-js@4.2.0:
+    optional: true
 
   css-declaration-sorter@7.2.0(postcss@8.5.6):
     dependencies:
@@ -14003,6 +13489,7 @@ snapshots:
   ecdsa-sig-formatter@1.0.11:
     dependencies:
       safe-buffer: 5.2.1
+    optional: true
 
   editorconfig@1.0.4:
     dependencies:
@@ -14012,10 +13499,6 @@ snapshots:
       semver: 7.7.2
 
   ee-first@1.1.1: {}
-
-  effect@3.11.5:
-    dependencies:
-      fast-check: 3.23.2
 
   effect@3.14.21:
     dependencies:
@@ -14284,6 +13767,7 @@ snapshots:
   fast-check@3.23.2:
     dependencies:
       pure-rand: 6.1.0
+    optional: true
 
   fast-deep-equal@3.1.3: {}
 
@@ -14308,6 +13792,7 @@ snapshots:
   fast-xml-parser@5.2.5:
     dependencies:
       strnum: 2.1.1
+    optional: true
 
   fastq@1.19.1:
     dependencies:
@@ -14351,7 +13836,8 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  find-my-way-ts@0.1.5: {}
+  find-my-way-ts@0.1.5:
+    optional: true
 
   find-up-simple@1.0.1: {}
 
@@ -14578,6 +14064,7 @@ snapshots:
       debug: 4.4.1
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   http-shutdown@1.2.2: {}
 
@@ -14595,8 +14082,6 @@ snapshots:
   iconv-lite@0.6.3:
     dependencies:
       safer-buffer: 2.1.2
-
-  idb-keyval@6.2.1: {}
 
   idb-keyval@6.2.2:
     optional: true
@@ -14634,20 +14119,6 @@ snapshots:
 
   ini@4.1.2: {}
 
-  ioredis@5.4.2:
-    dependencies:
-      "@ioredis/commands": 1.2.0
-      cluster-key-slot: 1.1.2
-      debug: 4.4.1
-      denque: 2.1.0
-      lodash.defaults: 4.2.0
-      lodash.isarguments: 3.1.0
-      redis-errors: 1.2.0
-      redis-parser: 3.0.0
-      standard-as-callback: 2.1.0
-    transitivePeerDependencies:
-      - supports-color
-
   ioredis@5.6.1:
     dependencies:
       "@ioredis/commands": 1.2.0
@@ -14672,7 +14143,8 @@ snapshots:
     dependencies:
       binary-extensions: 2.3.0
 
-  is-buffer@2.0.5: {}
+  is-buffer@2.0.5:
+    optional: true
 
   is-builtin-module@3.2.1:
     dependencies:
@@ -14705,7 +14177,8 @@ snapshots:
 
   is-module@1.0.0: {}
 
-  is-node-process@1.2.0: {}
+  is-node-process@1.2.0:
+    optional: true
 
   is-number@7.0.0: {}
 
@@ -14789,8 +14262,6 @@ snapshots:
     dependencies:
       argparse: 2.0.1
 
-  jsbi@4.3.2: {}
-
   jsesc@3.1.0: {}
 
   json-buffer@3.0.1: {}
@@ -14840,6 +14311,7 @@ snapshots:
       lodash.once: 4.1.1
       ms: 2.1.3
       semver: 7.7.2
+    optional: true
 
   junk@4.0.1: {}
 
@@ -14848,22 +14320,13 @@ snapshots:
       buffer-equal-constant-time: 1.0.1
       ecdsa-sig-formatter: 1.0.11
       safe-buffer: 5.2.1
-
-  jwa@2.0.1:
-    dependencies:
-      buffer-equal-constant-time: 1.0.1
-      ecdsa-sig-formatter: 1.0.11
-      safe-buffer: 5.2.1
+    optional: true
 
   jws@3.2.2:
     dependencies:
       jwa: 1.4.2
       safe-buffer: 5.2.1
-
-  jws@4.0.0:
-    dependencies:
-      jwa: 2.0.1
-      safe-buffer: 5.2.1
+    optional: true
 
   jwt-decode@4.0.0: {}
 
@@ -14952,25 +14415,32 @@ snapshots:
 
   lodash.defaults@4.2.0: {}
 
-  lodash.includes@4.3.0: {}
+  lodash.includes@4.3.0:
+    optional: true
 
   lodash.isarguments@3.1.0: {}
 
-  lodash.isboolean@3.0.3: {}
+  lodash.isboolean@3.0.3:
+    optional: true
 
-  lodash.isinteger@4.0.4: {}
+  lodash.isinteger@4.0.4:
+    optional: true
 
-  lodash.isnumber@3.0.3: {}
+  lodash.isnumber@3.0.3:
+    optional: true
 
-  lodash.isplainobject@4.0.6: {}
+  lodash.isplainobject@4.0.6:
+    optional: true
 
-  lodash.isstring@4.0.1: {}
+  lodash.isstring@4.0.1:
+    optional: true
 
   lodash.memoize@4.1.2: {}
 
   lodash.merge@4.6.2: {}
 
-  lodash.once@4.1.1: {}
+  lodash.once@4.1.1:
+    optional: true
 
   lodash.uniq@4.5.0: {}
 
@@ -15028,8 +14498,6 @@ snapshots:
   mdn-data@2.12.2: {}
 
   media-typer@1.1.0: {}
-
-  memory-pager@1.5.0: {}
 
   merge-descriptors@2.0.0: {}
 
@@ -15134,17 +14602,6 @@ snapshots:
       ast-module-types: 6.0.1
       node-source-walk: 7.0.1
 
-  mongodb-connection-string-url@3.0.2:
-    dependencies:
-      "@types/whatwg-url": 11.0.5
-      whatwg-url: 14.2.0
-
-  mongodb@6.17.0:
-    dependencies:
-      "@mongodb-js/saslprep": 1.3.0
-      bson: 6.10.4
-      mongodb-connection-string-url: 3.0.2
-
   mri@1.2.0: {}
 
   mrmime@2.0.1: {}
@@ -15168,7 +14625,8 @@ snapshots:
       msgpackr-extract: 3.0.3
     optional: true
 
-  multipasta@0.2.5: {}
+  multipasta@0.2.5:
+    optional: true
 
   nanoid@3.3.11: {}
 
@@ -15194,106 +14652,6 @@ snapshots:
       node-fetch: 3.3.2
       p-wait-for: 5.0.2
       qs: 6.14.0
-
-  nitropack@2.11.12(@azure/app-configuration@1.8.0)(@azure/cosmos@4.2.0)(@azure/data-tables@13.3.0)(@azure/identity@4.6.0)(@azure/keyvault-secrets@4.9.0)(@azure/storage-blob@12.26.0)(@capacitor/preferences@7.0.0(@capacitor/core@7.4.0))(@deno/kv@0.9.0)(@netlify/blobs@8.1.0)(@planetscale/database@1.19.0)(@upstash/redis@1.34.3)(@vercel/blob@0.27.1)(@vercel/kv@1.0.1)(aws4fetch@1.0.20)(better-sqlite3@11.10.0)(drizzle-orm@0.33.0(@opentelemetry/api@1.9.0)(@planetscale/database@1.19.0)(@prisma/client@5.22.0(prisma@5.22.0))(@types/better-sqlite3@7.6.13)(@types/pg@8.15.4)(better-sqlite3@11.10.0)(kysely@0.28.2)(pg@8.16.2)(postgres@3.4.7)(prisma@5.22.0)(react@19.1.0))(idb-keyval@6.2.1)(rolldown@1.0.0-beta.15)(uploadthing@7.4.4(express@5.1.0)(h3@1.15.3)):
-    dependencies:
-      "@cloudflare/kv-asset-handler": 0.4.0
-      "@netlify/functions": 3.1.10(rollup@4.44.0)
-      "@rollup/plugin-alias": 5.1.1(rollup@4.44.0)
-      "@rollup/plugin-commonjs": 28.0.6(rollup@4.44.0)
-      "@rollup/plugin-inject": 5.0.5(rollup@4.44.0)
-      "@rollup/plugin-json": 6.1.0(rollup@4.44.0)
-      "@rollup/plugin-node-resolve": 16.0.1(rollup@4.44.0)
-      "@rollup/plugin-replace": 6.0.2(rollup@4.44.0)
-      "@rollup/plugin-terser": 0.4.4(rollup@4.44.0)
-      "@vercel/nft": 0.29.4(rollup@4.44.0)
-      archiver: 7.0.1
-      c12: 3.0.4(magicast@0.3.5)
-      chokidar: 4.0.3
-      citty: 0.1.6
-      compatx: 0.2.0
-      confbox: 0.2.2
-      consola: 3.4.2
-      cookie-es: 2.0.0
-      croner: 9.1.0
-      crossws: 0.3.5
-      db0: 0.3.2(better-sqlite3@11.10.0)(drizzle-orm@0.33.0(@opentelemetry/api@1.9.0)(@planetscale/database@1.19.0)(@prisma/client@5.22.0(prisma@5.22.0))(@types/better-sqlite3@7.6.13)(@types/pg@8.15.4)(better-sqlite3@11.10.0)(kysely@0.28.2)(pg@8.16.2)(postgres@3.4.7)(prisma@5.22.0)(react@19.1.0))
-      defu: 6.1.4
-      destr: 2.0.5
-      dot-prop: 9.0.0
-      esbuild: 0.25.5
-      escape-string-regexp: 5.0.0
-      etag: 1.8.1
-      exsolve: 1.0.6
-      globby: 14.1.0
-      gzip-size: 7.0.0
-      h3: 1.15.3
-      hookable: 5.5.3
-      httpxy: 0.1.7
-      ioredis: 5.6.1
-      jiti: 2.4.2
-      klona: 2.0.6
-      knitwork: 1.2.0
-      listhen: 1.9.0
-      magic-string: 0.30.17
-      magicast: 0.3.5
-      mime: 4.0.7
-      mlly: 1.7.4
-      node-fetch-native: 1.6.6
-      node-mock-http: 1.0.0
-      ofetch: 1.4.1
-      ohash: 2.0.11
-      pathe: 2.0.3
-      perfect-debounce: 1.0.0
-      pkg-types: 2.1.0
-      pretty-bytes: 6.1.1
-      radix3: 1.1.2
-      rollup: 4.44.0
-      rollup-plugin-visualizer: 5.14.0(rolldown@1.0.0-beta.15)(rollup@4.44.0)
-      scule: 1.3.0
-      semver: 7.7.2
-      serve-placeholder: 2.0.2
-      serve-static: 2.2.0
-      source-map: 0.7.4
-      std-env: 3.9.0
-      ufo: 1.6.1
-      ultrahtml: 1.6.0
-      uncrypto: 0.1.3
-      unctx: 2.4.1
-      unenv: 2.0.0-rc.17
-      unimport: 5.0.1
-      unplugin-utils: 0.2.4
-      unstorage: 1.16.0(@azure/app-configuration@1.8.0)(@azure/cosmos@4.2.0)(@azure/data-tables@13.3.0)(@azure/identity@4.6.0)(@azure/keyvault-secrets@4.9.0)(@azure/storage-blob@12.26.0)(@capacitor/preferences@7.0.0(@capacitor/core@7.4.0))(@deno/kv@0.9.0)(@netlify/blobs@8.1.0)(@planetscale/database@1.19.0)(@upstash/redis@1.34.3)(@vercel/blob@0.27.1)(@vercel/kv@1.0.1)(aws4fetch@1.0.20)(db0@0.3.2(better-sqlite3@11.10.0)(drizzle-orm@0.33.0(@opentelemetry/api@1.9.0)(@planetscale/database@1.19.0)(@prisma/client@5.22.0(prisma@5.22.0))(@types/better-sqlite3@7.6.13)(@types/pg@8.15.4)(better-sqlite3@11.10.0)(kysely@0.28.2)(pg@8.16.2)(postgres@3.4.7)(prisma@5.22.0)(react@19.1.0)))(idb-keyval@6.2.1)(ioredis@5.6.1)(uploadthing@7.4.4(express@5.1.0)(h3@1.15.3))
-      untyped: 2.0.0
-      unwasm: 0.3.9
-      youch: 4.1.0-beta.8
-      youch-core: 0.3.2
-    transitivePeerDependencies:
-      - "@azure/app-configuration"
-      - "@azure/cosmos"
-      - "@azure/data-tables"
-      - "@azure/identity"
-      - "@azure/keyvault-secrets"
-      - "@azure/storage-blob"
-      - "@capacitor/preferences"
-      - "@deno/kv"
-      - "@electric-sql/pglite"
-      - "@libsql/client"
-      - "@netlify/blobs"
-      - "@planetscale/database"
-      - "@upstash/redis"
-      - "@vercel/blob"
-      - "@vercel/kv"
-      - aws4fetch
-      - better-sqlite3
-      - drizzle-orm
-      - encoding
-      - idb-keyval
-      - mysql2
-      - rolldown
-      - sqlite3
-      - supports-color
-      - uploadthing
 
   nitropack@2.11.12(@azure/app-configuration@1.9.0)(@azure/cosmos@4.4.1)(@azure/data-tables@13.3.1)(@azure/identity@4.10.1)(@azure/keyvault-secrets@4.10.0)(@azure/storage-blob@12.27.0)(@capacitor/preferences@7.0.1(@capacitor/core@7.4.0))(@deno/kv@0.10.0)(@netlify/blobs@8.2.0)(@planetscale/database@1.19.0)(@upstash/redis@1.35.0)(@vercel/blob@1.1.1)(@vercel/kv@1.0.1)(aws4fetch@1.0.20)(better-sqlite3@11.10.0)(drizzle-orm@0.33.0(@opentelemetry/api@1.9.0)(@planetscale/database@1.19.0)(@prisma/client@5.22.0(prisma@5.22.0))(@types/better-sqlite3@7.6.13)(@types/pg@8.15.4)(better-sqlite3@11.10.0)(kysely@0.28.2)(pg@8.16.2)(postgres@3.4.7)(prisma@5.22.0)(react@19.1.0))(idb-keyval@6.2.2)(rolldown@1.0.0-beta.15)(uploadthing@7.7.2(express@5.1.0)(h3@1.15.3)):
     dependencies:
@@ -16098,7 +15456,8 @@ snapshots:
     transitivePeerDependencies:
       - vue
 
-  priorityqueuejs@2.0.0: {}
+  priorityqueuejs@2.0.0:
+    optional: true
 
   prisma@5.22.0:
     dependencies:
@@ -16138,7 +15497,8 @@ snapshots:
 
   punycode@2.3.1: {}
 
-  pure-rand@6.1.0: {}
+  pure-rand@6.1.0:
+    optional: true
 
   pvtsutils@1.3.6:
     dependencies:
@@ -16269,7 +15629,8 @@ snapshots:
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
 
-  retry@0.13.1: {}
+  retry@0.13.1:
+    optional: true
 
   reusify@1.1.0: {}
 
@@ -16399,7 +15760,8 @@ snapshots:
 
   secure-json-parse@2.7.0: {}
 
-  semaphore@1.1.0: {}
+  semaphore@1.1.0:
+    optional: true
 
   semver@6.3.1: {}
 
@@ -16525,10 +15887,6 @@ snapshots:
 
   source-map@0.7.4: {}
 
-  sparse-bitfield@3.0.3:
-    dependencies:
-      memory-pager: 1.5.0
-
   spdx-correct@3.2.0:
     dependencies:
       spdx-expression-parse: 3.0.1
@@ -16547,7 +15905,8 @@ snapshots:
 
   split2@4.2.0: {}
 
-  sqids@0.3.0: {}
+  sqids@0.3.0:
+    optional: true
 
   stack-trace@0.0.10: {}
 
@@ -16560,8 +15919,6 @@ snapshots:
   statuses@2.0.2: {}
 
   std-env@3.9.0: {}
-
-  stoppable@1.1.0: {}
 
   streamx@2.22.1:
     dependencies:
@@ -16614,7 +15971,8 @@ snapshots:
     optionalDependencies:
       "@types/node": 24.0.3
 
-  strnum@2.1.1: {}
+  strnum@2.1.1:
+    optional: true
 
   structured-clone-es@1.0.0: {}
 
@@ -16762,10 +16120,6 @@ snapshots:
 
   tr46@0.0.3: {}
 
-  tr46@5.1.1:
-    dependencies:
-      punycode: 2.3.1
-
   triple-beam@1.4.1: {}
 
   ts-api-utils@2.1.0(typescript@5.8.3):
@@ -16845,6 +16199,7 @@ snapshots:
   undici@5.29.0:
     dependencies:
       "@fastify/busboy": 2.1.1
+    optional: true
 
   unenv@2.0.0-rc.17:
     dependencies:
@@ -16971,66 +16326,6 @@ snapshots:
       picomatch: 4.0.2
       webpack-virtual-modules: 0.6.2
 
-  unstorage@1.16.0(@azure/app-configuration@1.8.0)(@azure/cosmos@4.2.0)(@azure/data-tables@13.3.0)(@azure/identity@4.6.0)(@azure/keyvault-secrets@4.9.0)(@azure/storage-blob@12.26.0)(@capacitor/preferences@7.0.0(@capacitor/core@7.4.0))(@deno/kv@0.9.0)(@netlify/blobs@8.1.0)(@planetscale/database@1.19.0)(@upstash/redis@1.34.3)(@vercel/blob@0.27.1)(@vercel/kv@1.0.1)(aws4fetch@1.0.20)(db0@0.3.2(better-sqlite3@11.10.0)(drizzle-orm@0.33.0(@opentelemetry/api@1.9.0)(@planetscale/database@1.19.0)(@prisma/client@5.22.0(prisma@5.22.0))(@types/better-sqlite3@7.6.13)(@types/pg@8.15.4)(better-sqlite3@11.10.0)(kysely@0.28.2)(pg@8.16.2)(postgres@3.4.7)(prisma@5.22.0)(react@19.1.0)))(idb-keyval@6.2.1)(ioredis@5.4.2)(uploadthing@7.4.4(express@5.1.0)(h3@1.15.3)):
-    dependencies:
-      anymatch: 3.1.3
-      chokidar: 4.0.3
-      destr: 2.0.5
-      h3: 1.15.3
-      lru-cache: 10.4.3
-      node-fetch-native: 1.6.6
-      ofetch: 1.4.1
-      ufo: 1.6.1
-    optionalDependencies:
-      "@azure/app-configuration": 1.8.0
-      "@azure/cosmos": 4.2.0
-      "@azure/data-tables": 13.3.0
-      "@azure/identity": 4.6.0
-      "@azure/keyvault-secrets": 4.9.0
-      "@azure/storage-blob": 12.26.0
-      "@capacitor/preferences": 7.0.0(@capacitor/core@7.4.0)
-      "@deno/kv": 0.9.0
-      "@netlify/blobs": 8.1.0
-      "@planetscale/database": 1.19.0
-      "@upstash/redis": 1.34.3
-      "@vercel/blob": 0.27.1
-      "@vercel/kv": 1.0.1
-      aws4fetch: 1.0.20
-      db0: 0.3.2(better-sqlite3@11.10.0)(drizzle-orm@0.33.0(@opentelemetry/api@1.9.0)(@planetscale/database@1.19.0)(@prisma/client@5.22.0(prisma@5.22.0))(@types/better-sqlite3@7.6.13)(@types/pg@8.15.4)(better-sqlite3@11.10.0)(kysely@0.28.2)(pg@8.16.2)(postgres@3.4.7)(prisma@5.22.0)(react@19.1.0))
-      idb-keyval: 6.2.1
-      ioredis: 5.4.2
-      uploadthing: 7.4.4(express@5.1.0)(h3@1.15.3)
-
-  unstorage@1.16.0(@azure/app-configuration@1.8.0)(@azure/cosmos@4.2.0)(@azure/data-tables@13.3.0)(@azure/identity@4.6.0)(@azure/keyvault-secrets@4.9.0)(@azure/storage-blob@12.26.0)(@capacitor/preferences@7.0.0(@capacitor/core@7.4.0))(@deno/kv@0.9.0)(@netlify/blobs@8.1.0)(@planetscale/database@1.19.0)(@upstash/redis@1.34.3)(@vercel/blob@0.27.1)(@vercel/kv@1.0.1)(aws4fetch@1.0.20)(db0@0.3.2(better-sqlite3@11.10.0)(drizzle-orm@0.33.0(@opentelemetry/api@1.9.0)(@planetscale/database@1.19.0)(@prisma/client@5.22.0(prisma@5.22.0))(@types/better-sqlite3@7.6.13)(@types/pg@8.15.4)(better-sqlite3@11.10.0)(kysely@0.28.2)(pg@8.16.2)(postgres@3.4.7)(prisma@5.22.0)(react@19.1.0)))(idb-keyval@6.2.1)(ioredis@5.6.1)(uploadthing@7.4.4(express@5.1.0)(h3@1.15.3)):
-    dependencies:
-      anymatch: 3.1.3
-      chokidar: 4.0.3
-      destr: 2.0.5
-      h3: 1.15.3
-      lru-cache: 10.4.3
-      node-fetch-native: 1.6.6
-      ofetch: 1.4.1
-      ufo: 1.6.1
-    optionalDependencies:
-      "@azure/app-configuration": 1.8.0
-      "@azure/cosmos": 4.2.0
-      "@azure/data-tables": 13.3.0
-      "@azure/identity": 4.6.0
-      "@azure/keyvault-secrets": 4.9.0
-      "@azure/storage-blob": 12.26.0
-      "@capacitor/preferences": 7.0.0(@capacitor/core@7.4.0)
-      "@deno/kv": 0.9.0
-      "@netlify/blobs": 8.1.0
-      "@planetscale/database": 1.19.0
-      "@upstash/redis": 1.34.3
-      "@vercel/blob": 0.27.1
-      "@vercel/kv": 1.0.1
-      aws4fetch: 1.0.20
-      db0: 0.3.2(better-sqlite3@11.10.0)(drizzle-orm@0.33.0(@opentelemetry/api@1.9.0)(@planetscale/database@1.19.0)(@prisma/client@5.22.0(prisma@5.22.0))(@types/better-sqlite3@7.6.13)(@types/pg@8.15.4)(better-sqlite3@11.10.0)(kysely@0.28.2)(pg@8.16.2)(postgres@3.4.7)(prisma@5.22.0)(react@19.1.0))
-      idb-keyval: 6.2.1
-      ioredis: 5.6.1
-      uploadthing: 7.4.4(express@5.1.0)(h3@1.15.3)
-
   unstorage@1.16.0(@azure/app-configuration@1.9.0)(@azure/cosmos@4.4.1)(@azure/data-tables@13.3.1)(@azure/identity@4.10.1)(@azure/keyvault-secrets@4.10.0)(@azure/storage-blob@12.27.0)(@capacitor/preferences@7.0.1(@capacitor/core@7.4.0))(@deno/kv@0.10.0)(@netlify/blobs@8.2.0)(@planetscale/database@1.19.0)(@upstash/redis@1.35.0)(@vercel/blob@1.1.1)(@vercel/kv@1.0.1)(aws4fetch@1.0.20)(db0@0.3.2(better-sqlite3@11.10.0)(drizzle-orm@0.33.0(@opentelemetry/api@1.9.0)(@planetscale/database@1.19.0)(@prisma/client@5.22.0(prisma@5.22.0))(@types/better-sqlite3@7.6.13)(@types/pg@8.15.4)(better-sqlite3@11.10.0)(kysely@0.28.2)(pg@8.16.2)(postgres@3.4.7)(prisma@5.22.0)(react@19.1.0)))(idb-keyval@6.2.2)(ioredis@5.6.1)(uploadthing@7.7.2(express@5.1.0)(h3@1.15.3)):
     dependencies:
       anymatch: 3.1.3
@@ -17090,17 +16385,6 @@ snapshots:
       escalade: 3.2.0
       picocolors: 1.1.1
 
-  uploadthing@7.4.4(express@5.1.0)(h3@1.15.3):
-    dependencies:
-      "@effect/platform": 0.70.7(effect@3.11.5)
-      "@standard-schema/spec": 1.0.0-beta.3
-      "@uploadthing/mime-types": 0.3.4
-      "@uploadthing/shared": 7.1.5
-      effect: 3.11.5
-    optionalDependencies:
-      express: 5.1.0
-      h3: 1.15.3
-
   uploadthing@7.7.2(express@5.1.0)(h3@1.15.3):
     dependencies:
       "@effect/platform": 0.81.0(effect@3.14.21)
@@ -17131,7 +16415,8 @@ snapshots:
 
   uuid@11.1.0: {}
 
-  uuid@8.3.2: {}
+  uuid@8.3.2:
+    optional: true
 
   validate-npm-package-license@3.0.4:
     dependencies:
@@ -17357,8 +16642,6 @@ snapshots:
 
   webidl-conversions@3.0.1: {}
 
-  webidl-conversions@7.0.0: {}
-
   webpack-sources@3.3.2: {}
 
   webpack-virtual-modules@0.6.2: {}
@@ -17395,11 +16678,6 @@ snapshots:
       - uglify-js
 
   whatwg-mimetype@3.0.0: {}
-
-  whatwg-url@14.2.0:
-    dependencies:
-      tr46: 5.1.1
-      webidl-conversions: 7.0.0
 
   whatwg-url@5.0.0:
     dependencies:

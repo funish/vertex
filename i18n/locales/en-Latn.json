@@ -2,5 +2,335 @@
   "lang": {
     "en": "English",
     "zh": "简体中文"
+  },
+  "auth": {
+    "signin": {
+      "title": "Sign in to Funish Vertex",
+      "subtitle": "Welcome back, please sign in to your account",
+      "email": "Email address",
+      "password": "Password",
+      "remember": "Remember me",
+      "submit": "Sign in",
+      "orContinueWith": "Or continue with",
+      "noAccount": "Don't have an account?",
+      "signUp": "Sign up",
+      "forgotPassword": "Forgot password?",
+      "error": {
+        "required": "Please enter your email address",
+        "invalid": "Please enter a valid email address",
+        "passwordRequired": "Please enter your password",
+        "passwordShort": "Password must be at least 6 characters",
+        "loginFailed": "Login failed, please check your credentials",
+        "general": "An error occurred during login, please try again later"
+      }
+    },
+    "signup": {
+      "title": "Sign up for Funish Vertex",
+      "subtitle": "Create your account to start using the powerful multi-tenant platform",
+      "name": "Name",
+      "email": "Email address",
+      "password": "Password",
+      "confirmPassword": "Confirm password",
+      "terms": "I agree to the",
+      "termsLink": "Terms of Service",
+      "and": "and",
+      "privacyLink": "Privacy Policy",
+      "submit": "Create account",
+      "orContinueWith": "Or continue with",
+      "hasAccount": "Already have an account?",
+      "signIn": "Sign in",
+      "success": "Registration successful! Please check your email to verify your account.",
+      "error": {
+        "nameRequired": "Please enter your name",
+        "emailRequired": "Please enter your email address",
+        "emailInvalid": "Please enter a valid email address",
+        "passwordRequired": "Please enter your password",
+        "passwordShort": "Password must be at least 8 characters",
+        "confirmRequired": "Please confirm your password",
+        "passwordMismatch": "Passwords do not match",
+        "termsRequired": "Please agree to the Terms of Service and Privacy Policy",
+        "signupFailed": "Registration failed, please try again later",
+        "general": "An error occurred during registration, please try again later"
+      }
+    },
+    "forgotPassword": {
+      "title": "Reset your password",
+      "subtitle": "Enter your email address and we'll send you a link to reset your password",
+      "email": "Email address",
+      "submit": "Send reset link",
+      "success": "Password reset email sent! Please check your inbox.",
+      "rememberPassword": "Remember your password?",
+      "backToSignIn": "Back to sign in"
+    },
+    "resetPassword": {
+      "title": "Reset your password",
+      "subtitle": "Enter your new password below",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm new password",
+      "submit": "Reset password",
+      "success": "Password reset successfully! Redirecting to sign in...",
+      "backTo": "Back to",
+      "signIn": "sign in"
+    },
+    "verifyEmail": {
+      "title": "Verify your email",
+      "subtitle": "Please verify your email address to complete registration",
+      "verifying": "Verifying your email...",
+      "success": "Email verified successfully!",
+      "instructions": "We've sent a verification link to your email address. Please check your inbox and click the link to verify your account.",
+      "resend": "Resend verification email",
+      "continueToSignIn": "Continue to sign in",
+      "backTo": "Back to",
+      "signIn": "sign in"
+    },
+    "callback": {
+      "processing": "Processing your authentication...",
+      "success": "Authentication successful! Redirecting...",
+      "tryAgain": "Try again"
+    },
+    "oauth": {
+      "google": "Continue with Google",
+      "github": "Continue with GitHub",
+      "microsoft": "Continue with Microsoft"
+    },
+    "signOut": "Sign Out"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back, {org}!",
+    "currentOrganization": "Current Organization",
+    "selectOrganization": "Select Organization",
+    "stats": {
+      "totalUsers": "Total Users",
+      "activePlugins": "Active Plugins",
+      "apiCalls": "API Calls",
+      "uptime": "Uptime"
+    },
+    "recentActivity": {
+      "title": "Recent Activity",
+      "viewAll": "View All"
+    },
+    "quickActions": {
+      "title": "Quick Actions",
+      "inviteUser": "Invite User",
+      "addPlugin": "Add Plugin",
+      "createApiKey": "Create API Key",
+      "viewSettings": "View Settings"
+    },
+    "activities": {
+      "userJoined": "{user} joined the organization",
+      "pluginEnabled": "{plugin} plugin enabled",
+      "apiKeyCreated": "API key {key} created"
+    },
+    "viewAll": "View All"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "organizations": "Organizations",
+    "users": "Users",
+    "plugins": "Plugins",
+    "apiKeys": "API Keys",
+    "permissions": "Permissions",
+    "settings": "Settings"
+  },
+  "landing": {
+    "subtitle": "Powerful Multi-Tenant Authentication Platform",
+    "welcome": "Get Started",
+    "description": "Sign in or create an account to manage your multi-tenant authentication services",
+    "features": "Key Features",
+    "secure": "Secure",
+    "fast": "Fast",
+    "extensible": "Extensible",
+    "rights": "All rights reserved"
+  },
+  "plugins": {
+    "title": "Plugins",
+    "description": "Manage and extend your platform with powerful plugins",
+    "addPlugin": "Add Plugin",
+    "refresh": "Refresh",
+    "search": "Search plugins...",
+    "installed": "Installed Plugins",
+    "available": "Available Plugins",
+    "noInstalled": "No plugins installed yet",
+    "install": "Install",
+    "uninstall": "Uninstall",
+    "configure": "Configure",
+    "enable": "Enable",
+    "disable": "Disable",
+    "installCustom": "Install Custom Plugin",
+    "pluginUrl": "Plugin URL",
+    "pluginUrlPlaceholder": "https://example.com/plugin.zip",
+    "apiKey": "API Key (optional)",
+    "apiKeyPlaceholder": "Enter API key if required",
+
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "noAvailable": "No plugins available",
+    "retry": "Retry",
+    "configInfo": "Plugin Configuration",
+    "noConfigDescription": "No configuration options available for this plugin.",
+    "configurationComingSoon": "Plugin configuration interface coming soon."
+  },
+  "settings": {
+    "title": "Settings",
+    "description": "Manage your account settings and preferences",
+    "quickSettings": "Quick Settings",
+    "categories": "Settings Categories",
+    "darkMode": "Dark Mode",
+    "twoFactor": "Two-Factor Auth",
+    "emailNotifications": "Email Notifications",
+    "general": {
+      "title": "General",
+      "description": "Organization name, timezone, and basic settings",
+      "organizationName": "Organization Name",
+      "organizationNamePlaceholder": "Enter organization name",
+      "timezone": "Timezone",
+      "timezonePlaceholder": "Select timezone",
+      "language": "Language",
+      "languagePlaceholder": "Select language",
+      "dateFormat": "Date Format",
+      "dateFormatPlaceholder": "Select date format"
+    },
+    "security": {
+      "title": "Security",
+      "description": "Authentication, access control, and security policies",
+      "passwordRequirements": "Password Requirements",
+      "passwordRequirementsDescription": "Set minimum password strength requirements",
+      "configure": "Configure",
+      "sessionTimeout": "Session Timeout",
+      "sessionTimeoutDescription": "Set automatic logout after inactivity",
+      "apiAccessLogs": "API Access Logs",
+      "apiAccessLogsDescription": "Enable detailed API access logging"
+    },
+    "billing": {
+      "title": "Billing",
+      "description": "Subscription, payment methods, and invoices"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "description": "Email and in-app notification preferences",
+      "email": "Email Notifications",
+      "emailDescription": "Receive notifications via email",
+      "securityAlerts": "Security Alerts",
+      "securityAlertsDescription": "Get notified about security events",
+      "systemUpdates": "System Updates",
+      "systemUpdatesDescription": "Notifications about system maintenance",
+      "weeklyReports": "Weekly Reports",
+      "weeklyReportsDescription": "Receive weekly usage reports"
+    },
+    "actions": {
+      "resetToDefaults": "Reset to Defaults",
+      "saveChanges": "Save Changes"
+    }
+  },
+  "common": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "update": "Update",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success"
+  },
+  "organizations": {
+    "title": "Organizations",
+    "description": "Manage organizations and their settings",
+    "create": "Create Organization",
+    "refresh": "Refresh",
+    "search": "Search organizations...",
+    "list": "Organizations",
+    "members": "Members",
+    "created": "Created",
+    "plan": "Plan",
+    "switch": "Switch",
+    "createDialog": {
+      "title": "Create New Organization",
+      "name": "Organization Name",
+      "namePlaceholder": "Enter organization name",
+      "slug": "Organization Slug",
+      "slugPlaceholder": "Generated automatically",
+      "slugHelp": "Used in URLs and API endpoints",
+      "description": "Description",
+      "descriptionPlaceholder": "Optional description",
+      "create": "Create Organization"
+    }
+  },
+  "users": {
+    "title": "Users",
+    "description": "Manage users and their permissions",
+    "invite": "Invite User",
+    "refresh": "Refresh",
+    "search": "Search users...",
+    "filterByRole": "All Roles",
+    "list": "Users",
+    "table": {
+      "name": "Name",
+      "role": "Role",
+      "status": "Status",
+      "lastActive": "Last Active",
+      "joined": "Joined",
+      "actions": "Actions"
+    },
+    "inviteDialog": {
+      "title": "Invite New User",
+      "email": "Email Address",
+      "emailPlaceholder": "Enter email address",
+      "role": "Role",
+      "message": "Personal Message",
+      "messagePlaceholder": "Optional invitation message",
+      "send": "Send Invitation"
+    },
+    "editDialog": {
+      "title": "Edit User"
+    }
+  },
+  "apiKeys": {
+    "title": "API Keys",
+    "description": "Manage API keys for accessing services",
+    "create": "Create API Key",
+    "refresh": "Refresh",
+    "search": "Search API keys...",
+    "list": "API Keys",
+    "keyId": "Key ID",
+    "lastUsed": "Last Used",
+    "created": "Created",
+    "permissions": "Permissions",
+    "createDialog": {
+      "title": "Create New API Key",
+      "name": "Key Name",
+      "namePlaceholder": "Enter key name",
+      "description": "Description",
+      "descriptionPlaceholder": "Optional description",
+      "environment": "Environment",
+      "permissions": "Permissions",
+      "selectPermissions": "Select permissions",
+      "expiresAt": "Expires At",
+      "expiresAtPlaceholder": "Select expiration date",
+      "expiresAtHelp": "Leave empty for no expiration",
+      "create": "Create API Key"
+    }
+  },
+  "permissions": {
+    "title": "Permissions",
+    "description": "Manage roles and permissions",
+    "createRole": "Create Role",
+    "refresh": "Refresh",
+    "search": "Search roles...",
+    "roles": "Roles",
+    "userCount": "users",
+    "selectRole": "Select a role to edit permissions",
+    "selectRoleToEdit": "Choose a role from the list to view and edit its permissions",
+    "permissionsFor": "Permissions for",
+    "selectAll": "Select All",
+    "selectNone": "Select None",
+    "usersWithCustomPermissions": "Users with Custom Permissions",
+    "table": {
+      "user": "User",
+      "baseRole": "Base Role",
+      "customPermissions": "Custom Permissions",
+      "actions": "Actions"
+    }
   }
 }

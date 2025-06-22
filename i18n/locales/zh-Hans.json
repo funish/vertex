@@ -2,5 +2,336 @@
   "lang": {
     "en": "English",
     "zh": "简体中文"
+  },
+  "auth": {
+    "signin": {
+      "title": "登录到 Funish Vertex",
+      "subtitle": "欢迎回来，请登录您的账户",
+      "email": "邮箱地址",
+      "password": "密码",
+      "remember": "记住我",
+      "submit": "登录",
+      "orContinueWith": "或使用以下方式继续",
+      "noAccount": "还没有账户？",
+      "signUp": "注册",
+      "forgotPassword": "忘记密码？",
+      "error": {
+        "required": "请输入您的邮箱地址",
+        "invalid": "请输入有效的邮箱地址",
+        "passwordRequired": "请输入您的密码",
+        "passwordShort": "密码至少需要6个字符",
+        "loginFailed": "登录失败，请检查您的凭据",
+        "general": "登录过程中发生错误，请稍后再试"
+      }
+    },
+    "signup": {
+      "title": "注册 Funish Vertex",
+      "subtitle": "创建您的账户以开始使用强大的多租户平台",
+      "name": "姓名",
+      "email": "邮箱地址",
+      "password": "密码",
+      "confirmPassword": "确认密码",
+      "terms": "我同意",
+      "termsLink": "服务条款",
+      "and": "和",
+      "privacyLink": "隐私政策",
+      "submit": "创建账户",
+      "orContinueWith": "或使用以下方式继续",
+      "hasAccount": "已有账户？",
+      "signIn": "登录",
+      "success": "注册成功！请查看您的邮箱来验证账户。",
+      "error": {
+        "nameRequired": "请输入您的姓名",
+        "emailRequired": "请输入您的邮箱地址",
+        "emailInvalid": "请输入有效的邮箱地址",
+        "passwordRequired": "请输入您的密码",
+        "passwordShort": "密码至少需要8个字符",
+        "confirmRequired": "请确认您的密码",
+        "passwordMismatch": "密码不匹配",
+        "termsRequired": "请同意服务条款和隐私政策",
+        "signupFailed": "注册失败，请稍后再试",
+        "general": "注册过程中发生错误，请稍后再试"
+      }
+    },
+    "forgotPassword": {
+      "title": "重置您的密码",
+      "subtitle": "输入您的邮箱地址，我们将向您发送重置密码的链接",
+      "email": "邮箱地址",
+      "submit": "发送重置链接",
+      "success": "密码重置邮件已发送！请查看您的收件箱。",
+      "rememberPassword": "想起密码了？",
+      "backToSignIn": "返回登录"
+    },
+    "resetPassword": {
+      "title": "重置您的密码",
+      "subtitle": "在下方输入您的新密码",
+      "newPassword": "新密码",
+      "confirmPassword": "确认新密码",
+      "submit": "重置密码",
+      "success": "密码重置成功！正在跳转到登录...",
+      "backTo": "返回",
+      "signIn": "登录"
+    },
+    "verifyEmail": {
+      "title": "验证您的邮箱",
+      "subtitle": "请验证您的邮箱地址以完成注册",
+      "verifying": "正在验证您的邮箱...",
+      "success": "邮箱验证成功！",
+      "instructions": "我们已向您的邮箱发送了验证链接。请查看您的收件箱并点击链接来验证您的账户。",
+      "resend": "重新发送验证邮件",
+      "continueToSignIn": "继续登录",
+      "backTo": "返回",
+      "signIn": "登录"
+    },
+    "callback": {
+      "processing": "正在处理您的身份验证...",
+      "success": "身份验证成功！正在跳转...",
+      "tryAgain": "重试"
+    },
+    "oauth": {
+      "google": "使用 Google 继续",
+      "github": "使用 GitHub 继续",
+      "microsoft": "使用 Microsoft 继续"
+    },
+    "signOut": "登出"
+  },
+  "dashboard": {
+    "title": "仪表板",
+    "welcome": "欢迎回来，{org}！",
+    "currentOrganization": "当前组织",
+    "selectOrganization": "选择组织",
+    "description": "监控您组织的活动和性能",
+    "stats": {
+      "totalUsers": "总用户数",
+      "activePlugins": "活跃插件",
+      "apiCalls": "API调用",
+      "uptime": "正常运行时间"
+    },
+    "recentActivity": {
+      "title": "最近活动",
+      "viewAll": "查看全部"
+    },
+    "quickActions": {
+      "title": "快速操作",
+      "inviteUser": "邀请用户",
+      "addPlugin": "添加插件",
+      "createApiKey": "创建API密钥",
+      "viewSettings": "查看设置"
+    },
+    "activities": {
+      "userJoined": "{user} 加入了组织",
+      "pluginEnabled": "{plugin} 插件已启用",
+      "apiKeyCreated": "API密钥 {key} 已创建"
+    },
+    "viewAll": "查看全部"
+  },
+  "nav": {
+    "dashboard": "仪表板",
+    "organizations": "组织",
+    "users": "用户",
+    "plugins": "插件",
+    "apiKeys": "API密钥",
+    "permissions": "权限",
+    "settings": "设置"
+  },
+  "landing": {
+    "subtitle": "强大的多租户认证平台",
+    "welcome": "开始使用",
+    "description": "登录或注册以管理您的多租户认证服务",
+    "features": "核心特性",
+    "secure": "安全",
+    "fast": "快速",
+    "extensible": "可扩展",
+    "rights": "保留所有权利"
+  },
+  "plugins": {
+    "title": "插件管理",
+    "description": "使用强大的插件管理和扩展您的平台",
+    "addPlugin": "添加插件",
+    "refresh": "刷新",
+    "search": "搜索插件...",
+    "installed": "已安装插件",
+    "available": "可用插件",
+    "noInstalled": "尚未安装任何插件",
+    "install": "安装",
+    "uninstall": "卸载",
+    "configure": "配置",
+    "enable": "启用",
+    "disable": "禁用",
+    "installCustom": "安装自定义插件",
+    "pluginUrl": "插件地址",
+    "pluginUrlPlaceholder": "https://example.com/plugin.zip",
+    "apiKey": "API密钥 (可选)",
+    "apiKeyPlaceholder": "如需要请输入API密钥",
+
+    "enabled": "已启用",
+    "disabled": "已禁用",
+    "noAvailable": "没有可用的插件",
+    "retry": "重试",
+    "configInfo": "插件配置",
+    "noConfigDescription": "此插件没有可用的配置选项。",
+    "configurationComingSoon": "插件配置界面即将推出。"
+  },
+  "settings": {
+    "title": "设置",
+    "description": "管理您的账户设置和偏好",
+    "quickSettings": "快速设置",
+    "categories": "设置分类",
+    "darkMode": "暗色模式",
+    "twoFactor": "双因素认证",
+    "emailNotifications": "邮件通知",
+    "general": {
+      "title": "常规",
+      "description": "组织名称、时区和基本设置",
+      "organizationName": "组织名称",
+      "organizationNamePlaceholder": "输入组织名称",
+      "timezone": "时区",
+      "timezonePlaceholder": "选择时区",
+      "language": "语言",
+      "languagePlaceholder": "选择语言",
+      "dateFormat": "日期格式",
+      "dateFormatPlaceholder": "选择日期格式"
+    },
+    "security": {
+      "title": "安全",
+      "description": "身份验证、访问控制和安全策略",
+      "passwordRequirements": "密码要求",
+      "passwordRequirementsDescription": "设置最低密码强度要求",
+      "configure": "配置",
+      "sessionTimeout": "会话超时",
+      "sessionTimeoutDescription": "设置不活动后自动退出",
+      "apiAccessLogs": "API访问日志",
+      "apiAccessLogsDescription": "启用详细的API访问日志记录"
+    },
+    "billing": {
+      "title": "账单",
+      "description": "订阅、付款方式和发票"
+    },
+    "notifications": {
+      "title": "通知",
+      "description": "邮件和应用内通知偏好",
+      "email": "邮件通知",
+      "emailDescription": "通过邮件接收通知",
+      "securityAlerts": "安全警报",
+      "securityAlertsDescription": "获取安全事件通知",
+      "systemUpdates": "系统更新",
+      "systemUpdatesDescription": "系统维护通知",
+      "weeklyReports": "周报",
+      "weeklyReportsDescription": "接收每周使用报告"
+    },
+    "actions": {
+      "resetToDefaults": "重置为默认",
+      "saveChanges": "保存更改"
+    }
+  },
+  "common": {
+    "cancel": "取消",
+    "save": "保存",
+    "delete": "删除",
+    "edit": "编辑",
+    "create": "创建",
+    "update": "更新",
+    "loading": "加载中...",
+    "error": "错误",
+    "success": "成功"
+  },
+  "organizations": {
+    "title": "组织管理",
+    "description": "管理组织及其设置",
+    "create": "创建组织",
+    "refresh": "刷新",
+    "search": "搜索组织...",
+    "list": "组织列表",
+    "members": "成员",
+    "created": "创建时间",
+    "plan": "套餐",
+    "switch": "切换",
+    "createDialog": {
+      "title": "创建新组织",
+      "name": "组织名称",
+      "namePlaceholder": "输入组织名称",
+      "slug": "组织标识",
+      "slugPlaceholder": "自动生成",
+      "slugHelp": "用于URL和API端点",
+      "description": "描述",
+      "descriptionPlaceholder": "可选描述",
+      "create": "创建组织"
+    }
+  },
+  "users": {
+    "title": "用户管理",
+    "description": "管理用户和权限",
+    "invite": "邀请用户",
+    "refresh": "刷新",
+    "search": "搜索用户...",
+    "filterByRole": "所有角色",
+    "list": "用户列表",
+    "table": {
+      "name": "姓名",
+      "role": "角色",
+      "status": "状态",
+      "lastActive": "最后活跃",
+      "joined": "加入时间",
+      "actions": "操作"
+    },
+    "inviteDialog": {
+      "title": "邀请新用户",
+      "email": "邮箱地址",
+      "emailPlaceholder": "输入邮箱地址",
+      "role": "角色",
+      "message": "个人消息",
+      "messagePlaceholder": "可选邀请消息",
+      "send": "发送邀请"
+    },
+    "editDialog": {
+      "title": "编辑用户"
+    }
+  },
+  "apiKeys": {
+    "title": "API密钥",
+    "description": "管理访问服务的API密钥",
+    "create": "创建API密钥",
+    "refresh": "刷新",
+    "search": "搜索API密钥...",
+    "list": "API密钥列表",
+    "keyId": "密钥ID",
+    "lastUsed": "最后使用",
+    "created": "创建时间",
+    "permissions": "权限",
+    "createDialog": {
+      "title": "创建新API密钥",
+      "name": "密钥名称",
+      "namePlaceholder": "输入密钥名称",
+      "description": "描述",
+      "descriptionPlaceholder": "可选描述",
+      "environment": "环境",
+      "permissions": "权限",
+      "selectPermissions": "选择权限",
+      "expiresAt": "过期时间",
+      "expiresAtPlaceholder": "选择过期日期",
+      "expiresAtHelp": "留空表示永不过期",
+      "create": "创建API密钥"
+    }
+  },
+  "permissions": {
+    "title": "权限管理",
+    "description": "管理角色和权限",
+    "createRole": "创建角色",
+    "refresh": "刷新",
+    "search": "搜索角色...",
+    "roles": "角色",
+    "userCount": "用户",
+    "selectRole": "选择角色以编辑权限",
+    "selectRoleToEdit": "从列表中选择一个角色来查看和编辑其权限",
+    "permissionsFor": "权限设置",
+    "selectAll": "全选",
+    "selectNone": "全不选",
+    "usersWithCustomPermissions": "具有自定义权限的用户",
+    "table": {
+      "user": "用户",
+      "baseRole": "基础角色",
+      "customPermissions": "自定义权限",
+      "actions": "操作"
+    }
   }
 }

@@ -1,11 +1,5 @@
 // Import Funish Vertex plugins
-import {
-  aiRouterPlugin,
-  databasePlugin,
-  gatewayPlugin,
-  storagePlugin,
-  tenantPlugin,
-} from "@funish/vertex";
+
 import { betterAuth } from "better-auth";
 import {
   admin,
@@ -35,10 +29,54 @@ import { sso } from "better-auth/plugins/sso";
 import type { H3Event } from "h3";
 import { Pool } from "pg";
 import memoryDriver from "unstorage/drivers/memory";
+import {
+  aiRouterPlugin,
+  databasePlugin,
+  gatewayPlugin,
+  initializePluginSystem,
+  permissionPlugin,
+  registryPlugin,
+  storagePlugin,
+  tenantPlugin,
+} from "../../packages/vertex/src/plugins";
+import {
+  ac,
+  roles,
+  vertexPermissionConfig,
+} from "../../shared/utils/access-control";
+
+// Initialize plugin system to register built-in plugins
+initializePluginSystem();
 
 export const auth = betterAuth({
-  // Database configuration using Drizzle adapter
-  database: new Pool({ connectionString: process.env.DATABASE_URL }),
+  // Database configuration
+  database: new Pool({
+    connectionString: process.env.DATABASE_URL,
+    // Connection pool configuration
+    max: 20, // Max connections
+    min: 5, // Min connections
+    idleTimeoutMillis: 30000, // Idle connection timeout (30 seconds)
+    connectionTimeoutMillis: 10000, // Connection timeout (10 seconds)
+
+    // Query timeout configuration
+    query_timeout: 30000, // 30 seconds query timeout
+    statement_timeout: 60000, // 60 seconds statement timeout
+
+    // Connection configuration
+    keepAlive: true,
+    keepAliveInitialDelayMillis: 10000,
+
+    // SSL configuration (enable in production)
+    ssl:
+      process.env.NODE_ENV === "production"
+        ? {
+            rejectUnauthorized: false, // Adjust based on your SSL certificate settings
+          }
+        : false,
+
+    // Application name, for database monitoring
+    application_name: "funish-vertex-auth",
+  }),
 
   // Extend user model
   user: {
@@ -53,29 +91,38 @@ export const auth = betterAuth({
   // Email & Password authentication
   emailAndPassword: {
     enabled: true,
-    requireEmailVerification: false, // Can be set to false during development
+    requireEmailVerification: false, // Set to false for development
     sendResetPassword: async ({ user, url }) => {
       // TODO: Implement password reset email sending
       console.log(`Password reset for ${user.email}: ${url}`);
     },
   },
 
+  // Email verification configuration (optional, for when requireEmailVerification is true)
+  emailVerification: {
+    sendVerificationEmail: async ({ user, url }) => {
+      // TODO: Implement email verification sending
+      console.log(`Email verification for ${user.email}: ${url}`);
+    },
+  },
+
   // Social providers (optional)
   socialProviders: {
-    // github: {
-    //   clientId: process.env.GITHUB_CLIENT_ID || "",
-    //   clientSecret: process.env.GITHUB_CLIENT_SECRET || "",
-    // },
-    // google: {
-    //   clientId: process.env.GOOGLE_CLIENT_ID || "",
-    //   clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-    // },
+    github: {
+      clientId: process.env.GITHUB_CLIENT_ID || "",
+      clientSecret: process.env.GITHUB_CLIENT_SECRET || "",
+    },
   },
 
   // Better Auth Official Plugins
   plugins: [
     // Core Authentication Plugins
-    admin(),
+    admin({
+      ac,
+      roles,
+      defaultRole: "user", // Better Auth standard
+      adminRoles: ["admin"], // Better Auth standard
+    }),
     organization({
       teams: { enabled: true },
     }),
@@ -127,10 +174,17 @@ export const auth = betterAuth({
     oAuthProxy(),
 
     // Funish Vertex Built-in Plugins
+    registryPlugin(),
+    permissionPlugin({
+      enableOrganizationPermissions: true,
+      adminRoles: vertexPermissionConfig.adminRoles,
+      pluginEndpoints: vertexPermissionConfig.pluginEndpoints,
+      statements: vertexPermissionConfig.statements,
+      accessControl: ac,
+    }),
     tenantPlugin({
       enableOrganizationValidation: true,
       organizationHeader: "X-Organization-ID",
-      configStorage: memoryDriver(),
     }),
     storagePlugin({
       driver: memoryDriver(),
@@ -167,7 +221,7 @@ export const auth = betterAuth({
   // Advanced configuration
   advanced: {
     useSecureCookies: process.env.NODE_ENV === "production",
-    cookiePrefix: "better-auth",
+    cookiePrefix: "funish-vertex",
     crossSubDomainCookies: {
       enabled: false,
     },

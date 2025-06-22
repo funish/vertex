@@ -12,7 +12,7 @@ import {
   createPluginDefinition,
   zodToAuthPluginSchema,
 } from "../registry/utils";
-import type { TenantContext } from "../tenant";
+import { getOrganizationFromContext } from "../tenant";
 import { storageClientPlugin } from "./client";
 
 /**
@@ -191,8 +191,8 @@ export const storagePlugin = (
         },
         async (ctx) => {
           const { key } = ctx.params;
-          const tenantCtx = ctx as TenantContext;
-          const organizationId = tenantCtx.organization?.id;
+          const organization = getOrganizationFromContext(ctx);
+          const organizationId = organization?.id;
 
           if (!organizationId) {
             return ctx.json(
@@ -336,8 +336,8 @@ export const storagePlugin = (
         },
         async (ctx) => {
           const { key } = ctx.params;
-          const tenantCtx = ctx as TenantContext;
-          const organizationId = tenantCtx.organization?.id;
+          const organization = getOrganizationFromContext(ctx);
+          const organizationId = organization?.id;
 
           if (!organizationId) {
             return ctx.json(
@@ -455,8 +455,8 @@ export const storagePlugin = (
         },
         async (ctx) => {
           const { key } = ctx.params;
-          const tenantCtx = ctx as TenantContext;
-          const organizationId = tenantCtx.organization?.id;
+          const organization = getOrganizationFromContext(ctx);
+          const organizationId = organization?.id;
 
           if (!organizationId) {
             return ctx.json(
@@ -541,8 +541,8 @@ export const storagePlugin = (
           use: [sessionMiddleware],
         },
         async (ctx) => {
-          const tenantCtx = ctx as TenantContext;
-          const organizationId = tenantCtx.organization?.id;
+          const organization = getOrganizationFromContext(ctx);
+          const organizationId = organization?.id;
 
           if (!organizationId) {
             return ctx.json(
@@ -627,8 +627,8 @@ export const storagePlugin = (
           use: [sessionMiddleware],
         },
         async (ctx) => {
-          const tenantCtx = ctx as TenantContext;
-          const organizationId = tenantCtx.organization?.id;
+          const organization = getOrganizationFromContext(ctx);
+          const organizationId = organization?.id;
 
           if (!organizationId) {
             return ctx.json(
@@ -730,7 +730,7 @@ export const storagePluginDefinition = createPluginDefinition(
     name: "Storage",
     description:
       "Provides organization-scoped key-value storage with Better Auth integration and unstorage backend.",
-    category: "storage",
+
     status: "active",
     clientPlugin: storageClientPlugin,
   },

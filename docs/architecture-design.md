@@ -157,50 +157,69 @@ Each organization's data is completely isolated using consistent naming patterns
 
 ### Tenant Plugin Architecture
 
-The Tenant Plugin acts as a "wrapper" or "proxy" for all other plugins:
+The Tenant Plugin acts as a foundation for multi-tenancy across all other plugins, using Better Auth's native hooks system:
 
 ```typescript
-// Tenant Plugin provides organization context to all other plugins
-export const tenantPlugin = (options) => {
+// Simplified Tenant Plugin implementation
+export const tenantPlugin = (): BetterAuthPlugin => {
   return {
     id: "tenant",
 
-    // Global middleware for organization resolution
-    middlewares: [
-      {
-        path: "/api/v1/*",
-        middleware: async (ctx) => {
-          const orgId = ctx.request.headers.get("X-Organization-ID");
-          const authHeader = ctx.request.headers.get("Authorization");
-          const apiKey = authHeader?.replace("Bearer ", "");
-
-          const organization = await validateOrganizationAccess(orgId, apiKey);
-
-          // Inject organization context for other plugins
-          ctx.organization = organization;
-          ctx.getOrganizationStorage = () => createOrgStorage(organization.id);
-          ctx.getOrganizationDatabase = () =>
-            getOrgDatabase(organization.dbSchema);
+    // Extend Better Auth's organization schema
+    schema: {
+      organization: {
+        fields: {
+          dbSchema: { type: "string", required: false },
+          authConfig: { type: "string", required: false }, // JSON string
+          pluginConfigs: { type: "string", required: false }, // JSON string
+          customDomain: { type: "string", required: false },
         },
       },
-    ],
+    },
+
+    // Use Better Auth hooks for organization context injection
+    hooks: {
+      before: [
+        {
+          matcher: (ctx) => ctx.path.startsWith("/api/v1/"),
+          handler: async (ctx) => {
+            const orgId = ctx.headers["x-organization-id"];
+            if (orgId) {
+              const organization = await getOrganizationFromDatabase(orgId);
+              // Inject organization into Better Auth context
+              (ctx.context as any).organization = organization;
+            }
+            return ctx;
+          },
+        },
+      ],
+    },
 
     // Organization management endpoints
     endpoints: {
-      createOrganization: "/platform/organizations",
-      getOrganizationConfig: "/platform/organizations/:id/config",
-      manageApiKeys: "/platform/organizations/:id/api-keys",
+      getConfig: "/tenant/config",
+      updateConfig: "/tenant/config",
+      initializeTenant: "/tenant/initialize",
+      getStats: "/tenant/stats",
     },
   };
+};
+
+// Helper function for type-safe organization access
+export const getOrganizationFromContext = (ctx: {
+  context: unknown;
+}): Tenant | undefined => {
+  const context = ctx.context as { organization?: Tenant };
+  return context.organization;
 };
 ```
 
 ### Plugin Integration Pattern
 
-Core plugins remain organization-agnostic but can access organization context:
+Core plugins use the simplified helper function to access organization context:
 
 ```typescript
-// Storage Plugin - organization-agnostic implementation
+// Storage Plugin - clean organization context access
 export const storagePlugin = (options) => {
   return {
     id: "storage",
@@ -209,25 +228,24 @@ export const storagePlugin = (options) => {
         "/storage/:key",
         {
           method: "GET",
+          use: [sessionMiddleware],
         },
         async (ctx) => {
-          // Access organization-scoped storage if available
-          const storage = ctx.getOrganizationStorage?.() || defaultStorage;
+          // Get organization context using helper function
+          const organization = getOrganizationFromContext(ctx);
+          const organizationId = organization?.id;
+
+          if (!organizationId) {
+            return ctx.json(
+              { error: "Organization context required" },
+              { status: 400 },
+            );
+          }
+
+          // Create organization-scoped storage
+          const storage = await getOrganizationStorage(organizationId);
           const value = await storage.getItem(ctx.params.key);
           return ctx.json({ value });
-        },
-      ),
-
-      setItem: createAuthEndpoint(
-        "/storage/:key",
-        {
-          method: "POST",
-          body: z.any(), // Binary or JSON data
-        },
-        async (ctx) => {
-          const storage = ctx.getOrganizationStorage?.() || defaultStorage;
-          await storage.setItem(ctx.params.key, ctx.body);
-          return ctx.json({ success: true });
         },
       ),
     },
@@ -237,30 +255,25 @@ export const storagePlugin = (options) => {
 
 ### Organization Context Interface
 
-The `TenantContext` interface provides standardized methods for accessing organization-scoped resources:
+The simplified context approach uses a basic `Tenant` interface:
 
 ```typescript
-interface TenantContext {
-  organization: {
-    id: string;
-    name: string;
-    slug: string;
-    dbSchema: string;
-    storageQuota?: number;
-    apiKeys: OrganizationApiKey[];
-  };
+export interface Tenant {
+  id: string;
+  name: string;
+  slug: string;
+  createdAt: Date;
+  // Extended tenant-specific fields
+  dbSchema?: string;
+  authConfig?: string; // JSON string for auth configuration
+  pluginConfigs?: string; // JSON string for plugin configurations
+  customDomain?: string;
+  metadata?: any;
+}
 
-  // Storage access with automatic prefixing
-  getOrganizationStorage: () => Storage;
-
-  // Database access with organization schema
-  getOrganizationDatabase: () => DatabaseConnection;
-
-  // Configuration access
-  getOrganizationConfig: (pluginId: string) => PluginConfig | null;
-
-  // API key validation
-  validateApiKey: (key: string) => Promise<boolean>;
+// Type-safe helper for context access
+export interface ContextWithOrganization {
+  organization?: Tenant;
 }
 ```
 
@@ -343,3 +356,49 @@ interface ExtendedOrganization extends BetterAuthOrganization {
 - Organization configurations are cached in memory
 - API key validation results are cached with TTL
 - Storage metadata is cached to reduce database queries
+
+## 🚀 Development Progress
+
+### Phase 1: Core Architecture (✅ Completed)
+
+- [x] Project initialization and documentation design
+- [x] Better Auth platform-level setup
+- [x] Plugin Registry architecture design and implementation
+- [x] Multi-organization dynamic schema management
+- [x] Basic API framework
+
+### Phase 2: Core Plugin Development (✅ Completed)
+
+- [x] Storage Plugin (Unstorage integration)
+- [x] Database Plugin (Kysely integration)
+- [x] AI Router Plugin (Vercel AI SDK integration)
+- [x] Gateway Plugin (Routing, Rate Limiting, API Keys)
+- [x] Tenant Plugin (Multi-organization support)
+- [x] Permission Plugin (Access control and role management)
+
+### Phase 3: Backend Authentication Platform (✅ Completed)
+
+- [x] **Multi-Tenant Authentication System**: Complete authentication-as-a-service platform backend
+  - [x] Basic Authentication Framework with Better Auth
+  - [x] OAuth Integration (Google, GitHub, Microsoft, etc.)
+  - [x] Organization isolation and context injection
+  - [x] Access Control Integration with Permission Plugin
+  - [x] API Key authentication and validation
+
+See [Multi-Tenant Authentication Platform Design](./multi-tenant-auth-platform-design.md) for detailed implementation details.
+
+### Phase 4: Frontend Development (🔄 Current)
+
+- [x] Better Auth Vue client integration
+- [x] Basic authentication middleware
+- [ ] Authentication UI components (Login, Register, OAuth)
+- [ ] Organization management interface
+- [ ] Plugin marketplace interface
+- [ ] Dashboard and admin panels
+
+### Phase 5: Platform Features (Planned)
+
+- [ ] Advanced analytics and monitoring
+- [ ] Enterprise features (SAML, MFA, etc.)
+- [ ] Custom domain management UI
+- [ ] Advanced role and permission management

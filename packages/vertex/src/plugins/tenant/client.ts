@@ -13,50 +13,51 @@ export const tenantClientPlugin = (): BetterAuthClientPlugin => {
     getActions: ($fetch) => {
       return {
         /**
-         * Get organization-specific plugin configuration.
+         * Get current tenant configuration.
          */
-        getOrganizationConfig: async (plugin: string) => {
-          return $fetch(`/tenant/config/${encodeURIComponent(plugin)}`, {
+        getConfig: async () => {
+          return $fetch("/tenant/config", {
             method: "GET",
           });
         },
 
         /**
-         * Update organization-specific plugin configuration.
+         * Update tenant configuration.
          */
-        updateOrganizationConfig: async (
-          plugin: string,
-          config: Record<string, unknown>,
-        ) => {
-          return $fetch(`/tenant/config/${encodeURIComponent(plugin)}`, {
-            method: "PUT",
-            body: { config },
+        updateConfig: async (config: {
+          name?: string;
+          logo?: string;
+          metadata?: Record<string, unknown>;
+          dbSchema?: string;
+          authConfig?: Record<string, unknown>;
+          pluginConfigs?: Record<string, unknown>;
+          customDomain?: string;
+        }) => {
+          return $fetch("/tenant/config", {
+            method: "PATCH",
+            body: config,
           });
         },
 
         /**
-         * Get organization database schema information.
+         * Initialize tenant with default configurations.
          */
-        getOrganizationSchema: async () => {
-          return $fetch("/tenant/schema", {
-            method: "GET",
+        initialize: async (config?: {
+          dbSchema?: string;
+          authConfig?: Record<string, unknown>;
+          pluginConfigs?: Record<string, unknown>;
+        }) => {
+          return $fetch("/tenant/initialize", {
+            method: "POST",
+            body: config || {},
           });
         },
 
         /**
-         * Get organization storage configuration.
+         * Get tenant statistics.
          */
-        getOrganizationStorage: async () => {
-          return $fetch("/tenant/storage", {
-            method: "GET",
-          });
-        },
-
-        /**
-         * Get current organization context information.
-         */
-        getOrganizationContext: async () => {
-          return $fetch("/tenant/context", {
+        getStats: async () => {
+          return $fetch("/tenant/stats", {
             method: "GET",
           });
         },

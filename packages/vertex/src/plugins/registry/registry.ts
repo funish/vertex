@@ -4,7 +4,6 @@ import type { BetterAuthClientPlugin } from "better-auth/client";
 import { z } from "zod";
 import type {
   OrganizationPluginConfig,
-  PluginCategory,
   PluginDefinition,
   PluginStatus,
 } from "./types";
@@ -44,19 +43,15 @@ export class PluginRegistry {
 
   /**
    * Filters the registered plugins based on provided criteria.
-   * @param criteria The filter criteria (category, status, search term).
+   * @param criteria The filter criteria (status, search term).
    * @returns An array of matching plugin definitions.
    */
   filter(criteria: {
-    category?: PluginCategory;
     status?: PluginStatus;
     search?: string;
   }): PluginDefinition[] {
     let result = this.getAll();
 
-    if (criteria.category) {
-      result = result.filter((p) => p.category === criteria.category);
-    }
     if (criteria.status) {
       result = result.filter((p) => p.status === criteria.status);
     }
@@ -125,29 +120,27 @@ export const globalPluginRegistry = new PluginRegistry();
  * A Better Auth plugin to manage the plugin registry itself.
  * It exposes endpoints to list available plugins and their details.
  */
-export const platformRegistryPlugin = () => {
+export const registryPlugin = () => {
   return {
-    id: "platform-registry",
+    id: "registry",
 
     endpoints: {
       // Get all available plugins, with optional filtering.
       getAvailablePlugins: createAuthEndpoint(
-        "/platform/plugins",
+        "/registry/plugins",
         {
           method: "GET",
           query: z
             .object({
-              category: z.string().optional(),
               status: z.string().optional(),
               search: z.string().optional(),
             })
             .optional(),
         },
         async (ctx) => {
-          const { category, status, search } = ctx.query || {};
+          const { status, search } = ctx.query || {};
 
           const plugins = globalPluginRegistry.filter({
-            category: category as PluginCategory,
             status: status as PluginStatus,
             search,
           });
@@ -158,7 +151,7 @@ export const platformRegistryPlugin = () => {
 
       // Get the details of a single plugin by its ID.
       getPluginDetail: createAuthEndpoint(
-        "/platform/plugins/:id",
+        "/registry/plugins/:id",
         {
           method: "GET",
         },

@@ -12,23 +12,6 @@ export interface OrganizationPluginConfig {
 }
 
 /**
- * Defines the category of a plugin for organizational purposes.
- */
-export type PluginCategory =
-  | "auth"
-  | "storage"
-  | "database"
-  | "ai"
-  | "payment"
-  | "communication"
-  | "analytics"
-  | "social"
-  | "multimedia"
-  | "security"
-  | "utility"
-  | "other";
-
-/**
  * Defines the development status of a plugin.
  */
 export type PluginStatus = "active" | "inactive" | "deprecated" | "beta";
@@ -38,7 +21,6 @@ export type PluginStatus = "active" | "inactive" | "deprecated" | "beta";
  * This information is typically provided manually when defining a plugin.
  */
 export interface PluginMetadata extends PackageJson {
-  category?: PluginCategory;
   status: PluginStatus;
   clientPlugin?: (options: Record<string, unknown>) => BetterAuthClientPlugin;
 }

@@ -59,7 +59,6 @@ export function createPluginDefinition(
   return {
     ...metadata,
     id: pluginId,
-    category: metadata.category ?? "other",
     status: metadata.status ?? "inactive",
     serverPlugin: pluginFactory,
     configSchema: configSchema,
@@ -106,8 +105,9 @@ export function zodToAuthPluginSchema<T extends z.ZodRawShape>(
   const fields: Record<string, FieldAttribute> = {};
 
   for (const [key, value] of Object.entries(shape)) {
-    // Skip excluded fields
-    if (excludeFields.includes(key)) {
+    // Skip excluded fields and fields automatically handled by Better Auth
+    const autoFields = ["id"]; // Better Auth automatically adds 'id' as primary key
+    if (excludeFields.includes(key) || autoFields.includes(key)) {
       continue;
     }
 
@@ -116,7 +116,12 @@ export function zodToAuthPluginSchema<T extends z.ZodRawShape>(
     // Extract the inner type for wrapped types (optional, nullable, etc.)
     let innerType = zodType;
     let required = true;
-    let defaultValue: any;
+    let defaultValue:
+      | string
+      | number
+      | boolean
+      | (() => string | number | boolean)
+      | undefined;
 
     // Handle wrapped types (recursive unwrapping for chained calls)
     while (
@@ -131,8 +136,13 @@ export function zodToAuthPluginSchema<T extends z.ZodRawShape>(
         innerType = innerType._def.innerType;
         required = false;
       } else if (innerType instanceof z.ZodDefault) {
+        // Get default value from ZodDefault instance
+        const defaultValueDef = innerType._def.defaultValue;
+        defaultValue =
+          typeof defaultValueDef === "function"
+            ? defaultValueDef()
+            : defaultValueDef;
         innerType = innerType._def.innerType;
-        defaultValue = innerType._def.defaultValue();
         required = false;
       }
     }

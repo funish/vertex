@@ -7,7 +7,8 @@ import {
   createPluginDefinition,
   zodToAuthPluginSchema,
 } from "../registry/utils";
-import type { TenantContext } from "../tenant";
+import type { Tenant } from "../tenant";
+import { getOrganizationFromContext } from "../tenant";
 import { aiRouterClientPlugin } from "./client";
 
 /**
@@ -37,6 +38,25 @@ type AIRouterPluginOptions = z.infer<typeof AIRouterPluginOptionsSchema>;
 interface OrganizationAIConfig {
   providers?: Record<string, AIProviderConfig>;
 }
+
+/**
+ * Helper function to get AI configuration from organization context
+ */
+const getOrganizationAIConfig = (
+  organization: Tenant | undefined,
+): OrganizationAIConfig => {
+  if (!organization?.pluginConfigs) {
+    return {};
+  }
+
+  try {
+    const pluginConfigs = JSON.parse(organization.pluginConfigs);
+    return pluginConfigs["ai-router"] || {};
+  } catch (error) {
+    console.error("[AI Router] Failed to parse plugin configs:", error);
+    return {};
+  }
+};
 
 // AI Router schema using Zod (for type inference only)
 export const aiRequestSchema = z.object({
@@ -147,9 +167,8 @@ export const aiRouterPlugin = (
           }
 
           // Get organization-specific configuration if available
-          const tenantCtx = ctx as TenantContext;
-          const orgConfig = (tenantCtx.getOrganizationConfig?.("ai-router") ||
-            {}) as OrganizationAIConfig;
+          const organization = getOrganizationFromContext(ctx);
+          const orgConfig = getOrganizationAIConfig(organization);
           const orgProviders = orgConfig.providers || {};
 
           // Use organization-specific provider config or fall back to global config
@@ -185,7 +204,7 @@ export const aiRouterPlugin = (
           });
 
           const startTime = Date.now();
-          const organizationId = tenantCtx.organization?.id;
+          const organizationId = organization?.id;
 
           try {
             console.log(
@@ -276,9 +295,8 @@ export const aiRouterPlugin = (
         },
         async (ctx) => {
           // Get organization-specific configuration if available
-          const tenantCtx = ctx as TenantContext;
-          const orgConfig = (tenantCtx.getOrganizationConfig?.("ai-router") ||
-            {}) as OrganizationAIConfig;
+          const organization = getOrganizationFromContext(ctx);
+          const orgConfig = getOrganizationAIConfig(organization);
           const orgProviders = orgConfig.providers || {};
 
           // Merge organization providers with global providers
@@ -297,9 +315,7 @@ export const aiRouterPlugin = (
               })),
           );
 
-          console.log(
-            `[AI Router] Models listed for org ${tenantCtx.organization?.id}`,
-          );
+          console.log(`[AI Router] Models listed for org ${organization?.id}`);
 
           return ctx.json({
             object: "list",
@@ -332,9 +348,8 @@ export const aiRouterPlugin = (
           }
 
           // Get organization-specific configuration if available
-          const tenantCtx = ctx as TenantContext;
-          const orgConfig = (tenantCtx.getOrganizationConfig?.("ai-router") ||
-            {}) as OrganizationAIConfig;
+          const organization = getOrganizationFromContext(ctx);
+          const orgConfig = getOrganizationAIConfig(organization);
           const orgProviders = orgConfig.providers || {};
 
           // Use organization-specific provider config or fall back to global config
@@ -370,7 +385,7 @@ export const aiRouterPlugin = (
           });
 
           const startTime = Date.now();
-          const organizationId = tenantCtx.organization?.id;
+          const organizationId = organization?.id;
 
           try {
             console.log(
@@ -465,8 +480,8 @@ export const aiRouterPlugin = (
           use: [sessionMiddleware],
         },
         async (ctx) => {
-          const tenantCtx = ctx as TenantContext;
-          const organizationId = tenantCtx.organization?.id;
+          const organization = getOrganizationFromContext(ctx);
+          const organizationId = organization?.id;
 
           if (!organizationId) {
             return ctx.json(
@@ -586,8 +601,8 @@ export const aiRouterPlugin = (
             })
             .parse(ctx.body);
 
-          const tenantCtx = ctx as TenantContext;
-          const organizationId = tenantCtx.organization?.id;
+          const organization = getOrganizationFromContext(ctx);
+          const organizationId = organization?.id;
 
           if (!organizationId) {
             return ctx.json(
@@ -648,7 +663,7 @@ export const aiRouterPluginDefinition = createPluginDefinition(aiRouterPlugin, {
   name: "AI Router",
   description:
     "Provides organization-scoped AI provider routing with Better Auth integration and OpenAI-compatible API.",
-  category: "ai",
+
   status: "active",
   clientPlugin: aiRouterClientPlugin,
 });
