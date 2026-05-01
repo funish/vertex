@@ -53,7 +53,7 @@
     "@unocss/reset": "66.2.3",
     "@vue/test-utils": "2.4.6",
     "better-auth": "1.2.9",
-    "happy-dom": "18.0.1",
+    "happy-dom": "20.0.0",
     "ioredis": "5.6.1",
     "kysely": "0.28.2",
     "nuxt": "3.17.5",
