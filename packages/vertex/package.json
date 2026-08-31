@@ -50,7 +50,7 @@
   "dependencies": {
     "@ai-sdk/openai-compatible": "0.2.14",
     "@cap.js/server": "1.0.16",
-    "ai": "4.3.16",
+    "ai": "5.0.52",
     "better-auth": "1.2.9",
     "h3": "1.15.3",
     "kysely": "0.28.2",
